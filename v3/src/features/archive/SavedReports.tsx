@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import type { ReportListItem, ListReportsParams } from '@/lib/types/report';
 import { escapeHtml } from '@/lib/utils/escape';
 
@@ -14,6 +14,7 @@ export function SavedReports({ onOpen }: SavedReportsProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [filters, setFilters] = useState<Partial<ListReportsParams>>({});
   const [total, setTotal] = useState(0);
+  const isInitialLoad = useRef(true);
 
   const fetchReports = useCallback(async () => {
     setLoading(true);
@@ -43,6 +44,10 @@ export function SavedReports({ onOpen }: SavedReportsProps) {
   }, [filters, searchQuery]);
 
   useEffect(() => {
+    if (isInitialLoad.current) {
+      isInitialLoad.current = false;
+      return;
+    }
     fetchReports();
   }, [fetchReports]);
 

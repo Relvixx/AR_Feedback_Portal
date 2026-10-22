@@ -44,7 +44,13 @@ export default function HomePage() {
 
   const handleDownloadPDF = useCallback(() => {
     if (!activeReport) return;
-    window.location.href = `/api/report/${activeReport.id}/pdf`;
+    // Use anchor element for file download to avoid lint warning
+    const link = document.createElement('a');
+    link.href = `/api/report/${activeReport.id}/pdf`;
+    link.setAttribute('download', '');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   }, [activeReport]);
 
   const handleOpenReport = useCallback(async (id: string) => {

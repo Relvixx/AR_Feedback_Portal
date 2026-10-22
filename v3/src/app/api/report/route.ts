@@ -3,8 +3,9 @@ import { AcademicInputSchema } from '@/lib/validation/input';
 import { generateFirstReport, generateNextVersion } from '@/lib/feedback/generator';
 import { storage } from '@/lib/storage';
 import { FeedbackPeriod } from '@/lib/types/report';
+import { withDevelopmentGuardSimple } from '@/lib/api/guard';
 
-export async function POST(request: NextRequest) {
+async function createReportHandler(request: NextRequest) {
   try {
     const body = await request.json();
     const validation = AcademicInputSchema.safeParse(body);
@@ -76,3 +77,5 @@ export async function POST(request: NextRequest) {
     );
   }
 }
+
+export const POST = withDevelopmentGuardSimple(createReportHandler);

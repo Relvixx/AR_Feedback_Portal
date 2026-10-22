@@ -1,9 +1,12 @@
 import { readFileSync } from 'fs';
-import { join } from 'path';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
 import { ReportSnapshot, FeedbackPeriod } from '@/lib/types/report';
 
-const TEMPLATE_PATH = join(process.cwd(), 'src/lib/pdf/template.html');
-const LOGO_PATH = join(process.cwd(), '../../assets/college_logo.png');
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const TEMPLATE_PATH = join(__dirname, 'template.html');
+const LOGO_PATH = join(__dirname, '../../assets/college_logo.png');
 let cachedTemplate: string | null = null;
 let cachedLogoBase64: string | null = null;
 
@@ -154,7 +157,7 @@ function periodLabel(period: FeedbackPeriod): string {
   return period === 'MID' ? 'Mid Semester' : 'End Semester';
 }
 
-function renderTemplate(report: ReportSnapshot): string {
+export function renderTemplate(report: ReportSnapshot): string {
   const template = getTemplate();
   const logoBase64 = getLogoBase64();
   
@@ -171,20 +174,20 @@ function renderTemplate(report: ReportSnapshot): string {
   const page2Charts = renderChartsHTML(charts, 6, 4);
   
   const filled = template
-    .replace('{{LOGO_BASE64}}', logoBase64)
-    .replace('{{COLLEGE_NAME}}', "MET's Institute of Technology (P) B. Tech.")
-    .replace('{{AFFILIATION}}', 'Affiliated to Dr. Babasaheb Ambedkar Technological University, Lonere.')
-    .replace('{{DEPARTMENT}}', 'Department of Automation and Robotics')
-    .replace('{{PERIOD_LABEL}}', periodLabel(report.period))
-    .replace('{{ACADEMIC_YEAR}}', report.academic.academicYear)
-    .replace('{{SUBJECT_CODE}}', escapeHtml(report.academic.subjectCode))
-    .replace('{{SEMESTER}}', String(report.academic.semester))
-    .replace('{{SUBJECT_NAME}}', escapeHtml(report.academic.subjectName))
-    .replace('{{FACULTY_NAME}}', escapeHtml(report.academic.facultyName))
-    .replace('{{PAGE1_CHARTS}}', page1Charts)
-    .replace('{{PAGE2_CHARTS}}', page2Charts)
-    .replace('{{RESPONDENT_COUNT}}', String(report.respondentCount))
-    .replace('{{DATA_ORIGIN}}', report.dataOrigin);
+    .replace(/\{\{LOGO_BASE64\}\}/g, logoBase64)
+    .replace(/\{\{COLLEGE_NAME\}\}/g, "MET's Institute of Technology (P) B. Tech.")
+    .replace(/\{\{AFFILIATION\}\}/g, 'Affiliated to Dr. Babasaheb Ambedkar Technological University, Lonere.')
+    .replace(/\{\{DEPARTMENT\}\}/g, 'Department of Automation and Robotics')
+    .replace(/\{\{PERIOD_LABEL\}\}/g, periodLabel(report.period))
+    .replace(/\{\{ACADEMIC_YEAR\}\}/g, report.academic.academicYear)
+    .replace(/\{\{SUBJECT_CODE\}\}/g, escapeHtml(report.academic.subjectCode))
+    .replace(/\{\{SEMESTER\}\}/g, String(report.academic.semester))
+    .replace(/\{\{SUBJECT_NAME\}\}/g, escapeHtml(report.academic.subjectName))
+    .replace(/\{\{FACULTY_NAME\}\}/g, escapeHtml(report.academic.facultyName))
+    .replace(/\{\{PAGE1_CHARTS\}\}/g, page1Charts)
+    .replace(/\{\{PAGE2_CHARTS\}\}/g, page2Charts)
+    .replace(/\{\{RESPONDENT_COUNT\}\}/g, String(report.respondentCount))
+    .replace(/\{\{DATA_ORIGIN\}\}/g, report.dataOrigin);
   
   return filled;
 }

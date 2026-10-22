@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, FormEvent, ChangeEvent } from 'react';
+import { useState, useEffect, useRef, FormEvent, ChangeEvent } from 'react';
 import { AcademicInputSchema } from '@/lib/validation/input';
 import type { AcademicInput } from '@/lib/validation/input';
 import type { ReportSnapshot } from '@/lib/types/report';
@@ -11,20 +11,23 @@ interface ReportFormProps {
 }
 
 export function ReportForm({ onGenerate, initialReport }: ReportFormProps) {
-  const [formData, setFormData] = useState<AcademicInput>({
+  const [formData, setFormData] = useState<AcademicInput>(() => ({
     academicYear: '2022-23',
     semester: 3,
     subjectName: '',
     subjectCode: '',
     facultyName: '',
     period: 'MID',
-  });
+  }));
   
   const [errors, setErrors] = useState<Partial<Record<keyof AcademicInput, string>>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const initialReportRef = useRef<ReportSnapshot | null>(null);
 
+  // Sync form data with initialReport prop changes using ref to avoid effect warning
   useEffect(() => {
-    if (initialReport) {
+    if (initialReport && initialReport !== initialReportRef.current) {
+      initialReportRef.current = initialReport;
       setFormData({
         academicYear: initialReport.academic.academicYear,
         semester: initialReport.academic.semester,

@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { storage } from '@/lib/storage';
 import { generateNextVersion } from '@/lib/feedback/generator';
+import { withDevelopmentGuard } from '@/lib/api/guard';
 
-export async function POST(
+async function regenerateReportHandler(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<Record<string, string>> }
 ) {
   try {
     const { id } = await params;
@@ -26,3 +27,5 @@ export async function POST(
     );
   }
 }
+
+export const POST = withDevelopmentGuard(regenerateReportHandler);

@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { storage } from '@/lib/storage';
 import { generatePDF } from '@/lib/pdf/generator';
+import { withDevelopmentGuard } from '@/lib/api/guard';
 
-export async function GET(
+async function downloadPDFHandler(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<Record<string, string>> }
 ) {
   try {
     const { id } = await params;
@@ -34,3 +35,5 @@ export async function GET(
     );
   }
 }
+
+export const GET = withDevelopmentGuard(downloadPDFHandler);

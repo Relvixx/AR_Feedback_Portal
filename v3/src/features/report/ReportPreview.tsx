@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { ReportSnapshot } from '@/lib/types/report';
 import { escapeHtml } from '@/lib/utils/escape';
 
@@ -20,7 +21,13 @@ export function ReportPreview({ report }: ReportPreviewProps) {
   return (
     <div className="preview" id="report-preview">
       <div className="sheet-header">
-        <img alt="College logo" src="/assets/college_logo.png" />
+        <Image
+          alt="College logo"
+          src="/assets/college_logo.png"
+          width={120}
+          height={56}
+          priority
+        />
         <div className="sheet-institute">
           <h2>MET&apos;s Institute of Technology (P) B. Tech.</h2>
           <p>Affiliated to Dr. Babasaheb Ambedkar Technological University, Lonere.</p>
