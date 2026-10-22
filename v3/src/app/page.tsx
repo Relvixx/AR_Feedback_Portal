@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
-import { Brand } from '@/components/Brand';
+import { useState, useCallback } from 'react';
+import { AppShell } from '@/components/AppShell';
 import { ReportForm } from '@/features/report/ReportForm';
 import { ReportPreview } from '@/features/report/ReportPreview';
 import { SavedReports } from '@/features/archive/SavedReports';
@@ -44,13 +44,17 @@ export default function HomePage() {
 
   const handleDownloadPDF = useCallback(() => {
     if (!activeReport) return;
-    // Use anchor element for file download to avoid lint warning
     const link = document.createElement('a');
     link.href = `/api/report/${activeReport.id}/pdf`;
     link.setAttribute('download', '');
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  }, [activeReport]);
+
+  const handlePrint = useCallback(() => {
+    if (!activeReport) return;
+    window.open(`/api/report/${activeReport.id}/pdf`, '_blank');
   }, [activeReport]);
 
   const handleOpenReport = useCallback(async (id: string) => {
@@ -66,119 +70,101 @@ export default function HomePage() {
   }, [showToast]);
 
   return (
-    <div className="shell">
-      <aside className="sidebar">
-        <div className="brand">
-          <Brand />
-        </div>
-        <div className="side-label">Workspace</div>
-        <button
-          className={`nav-button ${page === 'create' ? 'active' : ''}`}
-          onClick={() => setPage('create')}
-          aria-label="Generate report"
-        >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8}>
-            <rect x="4" y="4" width="16" height="16" rx="2" />
-            <path d="M8 9h8M8 13h8M8 17h5" />
-          </svg>
-          <span>Generate report</span>
-        </button>
-        <button
-          className={`nav-button ${page === 'archive' ? 'active' : ''}`}
-          onClick={() => setPage('archive')}
-          aria-label="Saved reports"
-        >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8}>
-            <path d="M4 6h16v14H4zM3 3h18v3H3zM9 11h6" />
-          </svg>
-          <span>Saved reports</span>
-        </button>
-        <div className="side-bottom">
-          <strong>Automation & Robotics</strong>
-          <small>MET&apos;s Institute of Technology<br />Internal faculty workspace</small>
-        </div>
-      </aside>
-      <main className="main">
-        <div className="topbar">
-          <div className="topbar-left">
-            WORKSPACE <span>/</span> <b id="current-breadcrumb">{page === 'create' ? 'Generate report' : 'Saved reports'}</b>
-          </div>
-          <div className="top-aux">
-            <span className="version">v3.0</span>
-            <div className="top-pill">
-              <span className="dot" />
-              Local development
+    <AppShell currentPage={page} onNavigate={setPage}>
+      {page === 'create' && (
+        <section id="view-create">
+          <div className="page-head">
+            <div>
+              <div className="eyebrow">Academic reporting</div>
+              <h1>Generate Feedback Report</h1>
+              <p className="subtitle">Enter academic details, build charts, and export a print-ready feedback report.</p>
             </div>
           </div>
-        </div>
-
-        {page === 'create' && (
-          <section id="view-create">
-            <div className="head">
+          
+          <div className="panel">
+            <div className="panel-heading">
               <div>
-                <div className="eyebrow">Academic reporting</div>
-                <h1>Generate Feedback Report</h1>
-                <p className="subtitle">Enter academic details, build charts, and export a print-ready feedback report.</p>
+                <h2 className="panel-title">Report Information</h2>
+                <p className="panel-desc">Academic and subject details for the report header</p>
               </div>
+              <span className="step">01 / Details</span>
             </div>
-            <div className="panel">
-              <div className="panel-heading">
-                <div>
-                  <h2 className="panel-title">Report Information</h2>
-                  <p className="panel-desc">Academic and subject details for the report header</p>
+            <ReportForm onGenerate={handleReportGenerated} initialReport={activeReport} />
+          </div>
+
+          <div className="info-strip">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} aria-hidden="true">
+              <circle cx="12" cy="12" r="10" />
+              <path d="M12 11v6M12 7h.01" />
+            </svg>
+            <div>Reports use the same 10 feedback parameters as the reference workbook. Generated data is calculated consistently across all charts and saved as a fixed report snapshot.</div>
+          </div>
+
+          {activeReport && (
+            <section className="report-block">
+              <div className="report-header">
+                <div className="report-meta">
+                  <span className="report-badge">{activeReport.period === 'MID' ? 'Mid Semester' : 'End Semester'}</span>
+                  <h2>{activeReport.academic.subjectName} · {activeReport.academic.academicYear}</h2>
+                  <p className="report-subtitle">Version {activeReport.version} · Generated {new Date(activeReport.generatedAt).toLocaleString()}</p>
                 </div>
-                <span className="step">01 / Details</span>
-              </div>
-              <ReportForm onGenerate={handleReportGenerated} initialReport={activeReport} />
-            </div>
-            <div className="info-strip">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8}>
-                <circle cx="12" cy="12" r="10" />
-                <path d="M12 11v6M12 7h.01" />
-              </svg>
-              <div>Reports use the same 10 feedback parameters as the reference workbook. Generated data is calculated consistently across all charts and saved as a fixed report snapshot.</div>
-            </div>
-            {activeReport && (
-              <section className="report-block">
                 <div className="report-actions">
-                  <div>
-                    <div className="eyebrow">Report preview</div>
-                    <h2>{activeReport.academic.subjectName} · {activeReport.academic.academicYear}</h2>
-                  </div>
-                  <div className="action-buttons">
-                    <button className="btn secondary" onClick={handleRegenerate}>↻ Regenerate</button>
-                    <button className="btn primary" onClick={handleDownloadPDF}>
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.7}>
-                        <path d="M12 3v12m-5-5 5 5 5-5M5 17v4h14v-4" />
-                      </svg>
-                      Download PDF
-                    </button>
-                  </div>
+                  <button className="btn secondary" onClick={handleRegenerate} disabled={!activeReport}>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} aria-hidden="true">
+                      <path d="M23 4v6h-6" />
+                      <path d="M1 20v-6h6" />
+                      <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
+                    </svg>
+                    Regenerate
+                  </button>
+                  <button className="btn secondary" onClick={handlePrint}>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.7} aria-hidden="true">
+                      <path d="M6 9V2h12v7" />
+                      <path d="M6 14H4v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7" />
+                      <path d="M10 14v-4" />
+                      <path d="M14 10v4" />
+                    </svg>
+                    Print
+                  </button>
+                  <button className="btn primary" onClick={handleDownloadPDF}>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.7} aria-hidden="true">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                      <polyline points="7 10 12 15 17 10" />
+                      <line x1="12" y1="15" x2="12" y2="3" />
+                    </svg>
+                    Download PDF
+                  </button>
                 </div>
-                <ReportPreview report={activeReport} />
-              </section>
-            )}
-          </section>
-        )}
-
-        {page === 'archive' && (
-          <section id="view-archive">
-            <div className="head">
-              <div>
-                <div className="eyebrow">Records</div>
-                <h1>Saved Reports</h1>
-                <p className="subtitle">Reopen any earlier generated report, export the same data again, or create a new version.</p>
               </div>
-              <button className="btn primary" onClick={() => setPage('create')}>+ New report</button>
-            </div>
-            <div className="panel archive-panel">
-              <SavedReports onOpen={handleOpenReport} />
-            </div>
-          </section>
-        )}
+              <ReportPreview report={activeReport} />
+            </section>
+          )}
+        </section>
+      )}
 
-        <Toast message={toast?.message} type={toast?.type} onClose={() => setToast(undefined)} />
-      </main>
-    </div>
+      {page === 'archive' && (
+        <section id="view-archive">
+          <div className="page-head">
+            <div>
+              <div className="eyebrow">Records</div>
+              <h1>Saved Reports</h1>
+              <p className="subtitle">Reopen any earlier generated report, export the same data again, or create a new version.</p>
+            </div>
+            <button className="btn primary" onClick={() => setPage('create')}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} aria-hidden="true">
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+              </svg>
+              New Report
+            </button>
+          </div>
+          <div className="panel archive-panel">
+            <SavedReports onOpen={handleOpenReport} />
+          </div>
+        </section>
+      )}
+
+      <Toast message={toast?.message} type={toast?.type} onClose={() => setToast(undefined)} />
+    </AppShell>
   );
 }

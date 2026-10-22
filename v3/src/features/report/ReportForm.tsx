@@ -92,11 +92,16 @@ export function ReportForm({ onGenerate, initialReport }: ReportFormProps) {
     }
   };
 
+  const periodLabels = {
+    MID: 'Mid Semester',
+    END: 'End Semester',
+  };
+
   return (
     <form onSubmit={handleSubmit} className="form-body" noValidate>
       <div className="fields">
         <div className="field">
-          <label htmlFor="academic_year">Academic year / Batch *</label>
+          <label htmlFor="academic_year">Academic Year / Batch *</label>
           <input
             id="academic_year"
             name="academic_year"
@@ -111,7 +116,7 @@ export function ReportForm({ onGenerate, initialReport }: ReportFormProps) {
           />
           <small>Example: 2022-23</small>
           {errors.academicYear && (
-            <span id="academic_year-error" className="error-text" style={{ color: '#dc2626', fontSize: '11px' }}>
+            <span id="academic_year-error" className="field-error" style={{ color: '#dc2626', fontSize: '11px' }}>
               {errors.academicYear}
             </span>
           )}
@@ -152,14 +157,14 @@ export function ReportForm({ onGenerate, initialReport }: ReportFormProps) {
             <option value="8">Semester VIII</option>
           </select>
           {errors.semester && (
-            <span id="semester-error" className="error-text" style={{ color: '#dc2626', fontSize: '11px' }}>
+            <span id="semester-error" className="field-error" style={{ color: '#dc2626', fontSize: '11px' }}>
               {errors.semester}
             </span>
           )}
         </div>
         
         <div className="field">
-          <label htmlFor="subject_name">Subject name *</label>
+          <label htmlFor="subject_name">Subject Name *</label>
           <input
             id="subject_name"
             name="subject_name"
@@ -173,14 +178,14 @@ export function ReportForm({ onGenerate, initialReport }: ReportFormProps) {
             aria-describedby={errors.subjectName ? 'subject_name-error' : undefined}
           />
           {errors.subjectName && (
-            <span id="subject_name-error" className="error-text" style={{ color: '#dc2626', fontSize: '11px' }}>
+            <span id="subject_name-error" className="field-error" style={{ color: '#dc2626', fontSize: '11px' }}>
               {errors.subjectName}
             </span>
           )}
         </div>
         
         <div className="field">
-          <label htmlFor="subject_code">Subject code *</label>
+          <label htmlFor="subject_code">Subject Code *</label>
           <input
             id="subject_code"
             name="subject_code"
@@ -194,14 +199,14 @@ export function ReportForm({ onGenerate, initialReport }: ReportFormProps) {
             aria-describedby={errors.subjectCode ? 'subject_code-error' : undefined}
           />
           {errors.subjectCode && (
-            <span id="subject_code-error" className="error-text" style={{ color: '#dc2626', fontSize: '11px' }}>
+            <span id="subject_code-error" className="field-error" style={{ color: '#dc2626', fontSize: '11px' }}>
               {errors.subjectCode}
             </span>
           )}
         </div>
         
         <div className="field">
-          <label htmlFor="faculty_name">Faculty name *</label>
+          <label htmlFor="faculty_name">Faculty Name *</label>
           <input
             id="faculty_name"
             name="faculty_name"
@@ -215,7 +220,7 @@ export function ReportForm({ onGenerate, initialReport }: ReportFormProps) {
             aria-describedby={errors.facultyName ? 'faculty_name-error' : undefined}
           />
           {errors.facultyName && (
-            <span id="faculty_name-error" className="error-text" style={{ color: '#dc2626', fontSize: '11px' }}>
+            <span id="faculty_name-error" className="field-error" style={{ color: '#dc2626', fontSize: '11px' }}>
               {errors.facultyName}
             </span>
           )}
@@ -223,20 +228,30 @@ export function ReportForm({ onGenerate, initialReport }: ReportFormProps) {
         
         <div className="field">
           <label htmlFor="period">Feedback Period *</label>
-          <select
-            id="period"
-            name="period"
-            value={formData.period}
-            onChange={handleChange}
-            required
-            aria-invalid={!!errors.period}
-            aria-describedby={errors.period ? 'period-error' : undefined}
-          >
-            <option value="MID">Mid Semester</option>
-            <option value="END">End Semester</option>
-          </select>
+          <div className="period-selector" role="radiogroup" aria-label="Feedback period">
+            {(['MID', 'END'] as const).map((period) => (
+              <label key={period} className={`period-option ${formData.period === period ? 'period-option-active' : ''}`}>
+                <input
+                  type="radio"
+                  name="period"
+                  value={period}
+                  checked={formData.period === period}
+                  onChange={(e) => handleChange(e as unknown as ChangeEvent<HTMLInputElement>)}
+                  required
+                />
+                <span className="period-option-content">
+                  <span className="period-option-label">{period === 'MID' ? 'Mid Semester' : 'End Semester'}</span>
+                  <span className="period-option-desc">
+                    {period === 'MID' 
+                      ? 'Feedback collected mid-way through the semester' 
+                      : 'Feedback collected at the end of the semester'}
+                  </span>
+                </span>
+              </label>
+            ))}
+          </div>
           {errors.period && (
-            <span id="period-error" className="error-text" style={{ color: '#dc2626', fontSize: '11px' }}>
+            <span id="period-error" className="field-error" style={{ color: '#dc2626', fontSize: '11px' }}>
               {errors.period}
             </span>
           )}
@@ -264,10 +279,10 @@ export function ReportForm({ onGenerate, initialReport }: ReportFormProps) {
           className="btn primary"
           disabled={isSubmitting}
         >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} aria-hidden="true">
             <path d="M5 3h10l4 4v14H5zM15 3v5h5M8 13h8M8 17h6" />
           </svg>
-          {isSubmitting ? 'Generating…' : 'Generate report'}
+          {isSubmitting ? 'Generating…' : 'Generate Report'}
         </button>
       </div>
     </form>

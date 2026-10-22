@@ -12,7 +12,9 @@ export function SavedReports({ onOpen }: SavedReportsProps) {
   const [reports, setReports] = useState<ReportListItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const [filters, setFilters] = useState<Partial<ListReportsParams>>({});
+  const [periodFilter, setPeriodFilter] = useState<'MID' | 'END' | ''>('');
+  const [semesterFilter, setSemesterFilter] = useState<number | ''>('');
+  const [yearFilter, setYearFilter] = useState<string>('');
   const [total, setTotal] = useState(0);
   const isInitialLoad = useRef(true);
 
@@ -20,14 +22,9 @@ export function SavedReports({ onOpen }: SavedReportsProps) {
     setLoading(true);
     try {
       const params = new URLSearchParams();
-      if (searchQuery) {
-        // Client-side filtering for search query
-      }
-      Object.entries(filters).forEach(([key, value]) => {
-        if (value !== undefined && value !== '') {
-          params.set(key, String(value));
-        }
-      });
+      if (yearFilter) params.set('academicYear', yearFilter);
+      if (semesterFilter) params.set('semester', String(semesterFilter));
+      if (periodFilter) params.set('period', periodFilter);
       params.set('limit', '100');
       params.set('offset', '0');
       
@@ -41,7 +38,7 @@ export function SavedReports({ onOpen }: SavedReportsProps) {
     } finally {
       setLoading(false);
     }
-  }, [filters, searchQuery]);
+  }, [yearFilter, semesterFilter, periodFilter]);
 
   useEffect(() => {
     if (isInitialLoad.current) {
@@ -67,8 +64,15 @@ export function SavedReports({ onOpen }: SavedReportsProps) {
 
   if (loading) {
     return (
-      <div className="archive-panel" style={{ textAlign: 'center', padding: '40px' }}>
-        <div style={{ color: '#718296' }}>Loading reports…</div>
+      <div className="archive-panel loading-state">
+        <div className="loading-spinner" aria-label="Loading reports">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} aria-hidden="true">
+            <circle cx="12" cy="12" r="10" strokeOpacity="0.25" />
+            <path d="M12 2a10 10 0 0 1 10 10" stroke="#246b9e" strokeLinecap="round" />
+            <animateTransform attributeName="transform" type="rotate" from="0 12 12" to="360 12 12" dur="1s" repeatCount="indefinite" />
+          </svg>
+        </div>
+        <p style={{ color: '#617386', marginTop: 12 }}>Loading reports…</p>
       </div>
     );
   }
@@ -88,71 +92,128 @@ export function SavedReports({ onOpen }: SavedReportsProps) {
   return (
     <div className="archive-panel">
       <div className="archive-header">
-        <div>
+        <div className="archive-header-left">
           <h2 className="panel-title">Report Archive</h2>
           <p className="panel-desc" id="archive-count">
             {total} stored report{total !== 1 ? 's' : ''}
           </p>
         </div>
-        <input
-          className="filter-input"
-          id="archive-search"
-          placeholder="Search subject, code, year..."
-          value={searchQuery}
-          onChange={e => setSearchQuery(e.target.value)}
-        />
+        <div className="archive-filters">
+          <div className="filter-group">
+            <input
+              className="filter-input"
+              id="archive-search"
+              placeholder="Search subject, code, year..."
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+              aria-label="Search reports"
+            />
+          </div>
+          <div className="filter-group">
+            <select
+              className="filter-input filter-select"
+              value={periodFilter}
+              onChange={e => setPeriodFilter(e.target.value as 'MID' | 'END' | '')}
+              aria-label="Filter by period"
+            >
+              <option value="">All Periods</option>
+              <option value="MID">Mid Semester</option>
+              <option value="END">End Semester</option>
+            </select>
+          </div>
+          <div className="filter-group">
+            <select
+              className="filter-input filter-select"
+              value={semesterFilter}
+              onChange={e => setSemesterFilter(e.target.value ? parseInt(e.target.value, 10) : '')}
+              aria-label="Filter by semester"
+            >
+              <option value="">All Semesters</option>
+              <option value="1">I</option>
+              <option value="2">II</option>
+              <option value="3">III</option>
+              <option value="4">IV</option>
+              <option value="5">V</option>
+              <option value="6">VI</option>
+              <option value="7">VII</option>
+              <option value="8">VIII</option>
+            </select>
+          </div>
+          <div className="filter-group">
+            <input
+              className="filter-input"
+              placeholder="Year (e.g. 2022-23)"
+              value={yearFilter}
+              onChange={e => setYearFilter(e.target.value)}
+              aria-label="Filter by academic year"
+            />
+          </div>
+          {(periodFilter || semesterFilter || yearFilter) && (
+            <button
+              className="btn ghost"
+              onClick={() => {
+                setPeriodFilter('');
+                setSemesterFilter('');
+                setYearFilter('');
+                setSearchQuery('');
+              }}
+              style={{ padding: '8px 16px' }}
+            >
+              Clear filters
+            </button>
+          )}
+        </div>
       </div>
       <div id="archive-table-wrap">
-        <table className="archive-table">
-          <thead>
-            <tr>
-              <th>Subject</th>
-              <th>Academic year</th>
-              <th>Semester</th>
-              <th>Faculty</th>
-              <th>Period</th>
-              <th>Version</th>
-              <th>Generated</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredReports.map(r => (
-              <tr key={r.id}>
-                <td>
-                  <strong>{escapeHtml(r.subjectName)}</strong>
-                  <small>{escapeHtml(r.subjectCode)}</small>
-                </td>
-                <td>{escapeHtml(r.academicYear)}</td>
-                <td>{escapeHtml(String(r.semester))}</td>
-                <td>{escapeHtml(r.facultyName)}</td>
-                <td>
-                  <span style={{
-                    display: 'inline-block',
-                    padding: '2px 8px',
-                    borderRadius: '12px',
-                    fontSize: '11px',
-                    fontWeight: 600,
-                    background: r.period === 'MID' ? '#dbeafe' : '#fef3c7',
-                    color: r.period === 'MID' ? '#1e40af' : '#92400e',
-                  }}>
-                    {periodLabel(r.period)}
-                  </span>
-                </td>
-                <td>v{r.version}</td>
-                <td>{new Date(r.generatedAt).toLocaleString()}</td>
-                <td>
-                  <button
-                    className="link-btn"
-                    onClick={() => onOpen(r.id)}
-                  >
-                    Open ↗
-                  </button>
-                </td>
+        <div className="table-wrapper">
+          <table className="archive-table">
+            <thead>
+              <tr>
+                <th>Subject</th>
+                <th>Academic year</th>
+                <th>Semester</th>
+                <th>Faculty</th>
+                <th>Period</th>
+                <th>Version</th>
+                <th>Generated</th>
+                <th>Action</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {filteredReports.map(r => (
+                <tr key={r.id}>
+                  <td>
+                    <strong>{escapeHtml(r.subjectName)}</strong>
+                    <small>{escapeHtml(r.subjectCode)}</small>
+                  </td>
+                  <td>{escapeHtml(r.academicYear)}</td>
+                  <td>{escapeHtml(String(r.semester))}</td>
+                  <td>{escapeHtml(r.facultyName)}</td>
+                  <td>
+                    <span className={`period-badge ${r.period === 'MID' ? 'period-badge-mid' : 'period-badge-end'}`}>
+                      {periodLabel(r.period)}
+                    </span>
+                  </td>
+                  <td>v{r.version}</td>
+                  <td>{new Date(r.generatedAt).toLocaleString()}</td>
+                  <td>
+                    <button
+                      className="link-btn"
+                      onClick={() => onOpen(r.id)}
+                    >
+                      Open
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} aria-hidden="true" style={{ width: 14, height: 14, marginLeft: 4, verticalAlign: 'middle' }}>
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                        <polyline points="15 3 21 3 21 9" />
+                        <line x1="10" y1="14" x2="21" y2="3" />
+                      </svg>
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
