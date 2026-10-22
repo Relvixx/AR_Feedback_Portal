@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#142d45" />
+<title>A&R Feedback Report Portal</title>
+<style>
+:root{--navy:#102a43;--ink:#162c40;--muted:#718296;--blue:#246ba5;--border:#e3e9ef;--panel:#fff;--ground:#f4f7fa;--soft:#edf4fa;--green:#21837c;--radius:16px;--shadow:0 10px 30px rgba(19,46,70,.045)}
+*{box-sizing:border-box}html,body{padding:0;margin:0}body{font-family:Inter,'Segoe UI',system-ui,-apple-system,Arial,sans-serif;background:var(--ground);color:var(--ink);font-size:14px}button,input,select{font:inherit}button{cursor:pointer}button:disabled{cursor:not-allowed;opacity:.6}.shell{display:flex;min-height:100vh}.sidebar{width:260px;background:var(--navy);color:#d4e1eb;padding:29px 17px 20px;flex-shrink:0;display:flex;flex-direction:column}.brand{display:flex;align-items:center;gap:13px;padding:0 13px 32px}.mark{width:40px;height:42px;display:grid;place-items:center;background:#f7fafc;border-radius:11px;color:#143e62;font-size:19px;font-weight:850;letter-spacing:-1px}.brand-copy strong{display:block;color:#fff;font-size:15px;letter-spacing:.2px}.brand-copy span{font-size:11px;color:#b8ccdc}.side-label{font-size:10px;font-weight:800;letter-spacing:1.4px;color:#82a0b8;text-transform:uppercase;padding:5px 17px 10px}.nav-button{display:flex;align-items:center;gap:12px;background:transparent;border:1px solid transparent;border-radius:10px;color:#c4d5e3;width:100%;padding:12px 13px;margin-bottom:6px;text-align:left;font-weight:600}.nav-button:hover{background:#1d3d57}.nav-button.active{color:#fff;background:#255275;border-color:#315c7c}.nav-button svg{width:19px;height:19px;opacity:.94}.side-bottom{margin-top:auto;padding:17px 14px 3px;border-top:1px solid #35536c}.side-bottom strong{display:block;font-size:12px;color:#e4eef6;font-weight:700}.side-bottom small{display:block;margin-top:7px;line-height:1.5;color:#aac1d4}.main{flex:1;min-width:0;max-width:1560px;margin:0 auto;padding:27px 37px 55px}.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:31px;gap:15px}.topbar-left{display:flex;align-items:center;gap:10px;color:#8192a1;font-size:12px}.topbar-left b{color:#39516a;font-weight:750}.top-pill{display:flex;gap:7px;align-items:center;background:white;border:1px solid var(--border);border-radius:30px;padding:8px 13px;color:#5e7286;font-size:12px;font-weight:650}.top-pill .dot{background:#36a58b;border-radius:50%;width:7px;height:7px}.head{display:flex;justify-content:space-between;align-items:end;margin-bottom:23px;gap:15px}.eyebrow{font-size:11px;letter-spacing:1.5px;color:#27739b;font-weight:800;text-transform:uppercase;margin-bottom:9px}.head h1{margin:0;font-size:29px;letter-spacing:-1.1px;color:#142b3d;font-weight:800}.subtitle{margin:10px 0 0;color:var(--muted);line-height:1.6}.panel{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}.panel-heading{padding:23px 26px 20px;border-bottom:1px solid #ecf0f4;display:flex;justify-content:space-between;align-items:center;gap:8px}.panel-title{margin:0;font-weight:780;font-size:16px;color:#243a4c}.panel-desc{margin:6px 0 0;color:var(--muted);font-size:12px}.step{font-size:11px;background:var(--soft);color:#37769b;border-radius:20px;padding:6px 10px;font-weight:750;white-space:nowrap}.form-body{padding:25px 27px 28px}.fields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:23px 22px}.field label{display:block;font-size:12px;font-weight:730;margin-bottom:9px;color:#46596b}.field input,.field select{width:100%;height:44px;outline:none;border:1px solid #dbe3ea;background:#fff;border-radius:8px;padding:0 13px;color:#1e3447;transition:all .17s}.field input:focus,.field select:focus{border-color:#5b98bf;box-shadow:0 0 0 3px #e8f2f8}.field input[readonly]{color:#667c8d;background:#f5f8fa}.field small{font-size:11px;color:#9babb8;display:block;padding-top:7px}.form-actions{padding-top:26px;margin-top:25px;border-top:1px solid #eaf0f4;display:flex;justify-content:flex-end;gap:11px;align-items:center}.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;border-radius:9px;padding:12px 17px;font-size:12px;font-weight:800;letter-spacing:.05px;border:1px solid transparent;transition:all .16s}.btn svg{width:16px;height:16px}.primary{background:#236b9e;color:#fff;box-shadow:0 3px 9px rgba(35,107,158,.12)}.primary:hover{background:#185a89}.secondary{background:#fff;border-color:#d7e1e9;color:#385268}.secondary:hover{background:#f3f7fa}.quiet{border-color:transparent;color:#557189;background:#edf4fa}.quiet:hover{background:#e1edf6}.info-strip{display:flex;gap:13px;background:#eaf3f8;border:1px solid #d9e8f1;border-radius:11px;padding:14px 17px;color:#486f87;margin-top:18px;line-height:1.55;font-size:12px}.info-strip svg{width:17px;height:17px;flex-shrink:0;margin-top:1px}.report-block{margin-top:25px}.report-actions{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:15px}.report-actions h2{margin:0;font-size:18px}.action-buttons{display:flex;gap:10px;flex-wrap:wrap}.preview{background:#fff;border:1px solid #e0e7ee;border-radius:14px;padding:23px;box-shadow:var(--shadow)}.sheet-header{display:flex;gap:20px;align-items:center;padding:5px 5px 16px;border-bottom:1px solid #dbe5ec}.sheet-header img{width:148px;height:auto;object-fit:contain;flex-shrink:0}.sheet-institute{text-align:center;flex:1}.sheet-institute h2{font-size:17px;letter-spacing:-.3px;margin:0 0 5px;color:#c00000}.sheet-institute p{margin:0;color:#000;font-size:11px}.sheet-subhead{text-align:center;padding:15px 0 13px}.sheet-subhead strong{font-size:14px;color:#000}.sheet-subhead div{font-size:12px;color:#000;margin-top:4px}.meta{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));background:#f5f8fb;border-radius:9px;margin:0 0 20px;padding:13px 17px;gap:10px}.meta label{font-weight:700;font-size:10px;letter-spacing:.4px;color:#000;text-transform:uppercase;display:block;margin-bottom:5px}.meta div{font-weight:700;font-size:12px;color:#000}.chart-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}.chart-card{border:1px solid #e3e9ef;border-radius:11px;padding:14px 16px 10px;min-height:220px}.chart-card h3{font-size:13px;margin:0 0 10px;color:#000}.chart-content{display:block}.chart-svg{width:100%;height:155px;display:block}.chart-foot{font-size:10px;color:#000;margin-top:6px}.remarks{border-top:1px solid #e5eaf0;padding-top:16px;margin-top:20px}.remarks h4{font-size:12px;margin:0 0 14px;color:#000}.remarks p{height:35px;border-bottom:1px solid #d4dce4;font-size:12px;color:#000;margin:4px 0 22px}.small-note{font-size:11px;color:#000;line-height:1.5;margin-top:17px}.archive-panel{overflow:hidden}.archive-header{display:flex;align-items:center;justify-content:space-between;padding:20px 24px;border-bottom:1px solid var(--border);gap:12px}.filter-input{border:1px solid #dfe7ed;padding:10px 12px;border-radius:8px;outline:none;min-width:220px}.archive-table{width:100%;border-collapse:collapse}.archive-table thead{background:#f8fafc}.archive-table th{font-size:10px;letter-spacing:.6px;text-transform:uppercase;color:#8c9eab;text-align:left;padding:16px 18px}.archive-table td{padding:16px 18px;border-top:1px solid #eef1f5;color:#547080;font-size:12px}.archive-table td strong{color:#233d51;font-size:13px}.archive-table td small{display:block;font-size:11px;margin-top:4px}.link-btn{background:none;border:0;color:#236b9e;font-weight:800;padding:4px}.empty{text-align:center;padding:70px 20px;color:#889ba9}.empty svg{width:42px;height:42px;opacity:.5}.empty h3{font-size:16px;color:#344c5f;margin:12px 0 6px}.hidden{display:none!important}.toast{position:fixed;bottom:22px;right:22px;max-width:340px;background:#12314a;color:#fff;border-radius:10px;padding:14px 20px;box-shadow:0 14px 35px rgba(0,0,0,.2);opacity:0;pointer-events:none;transform:translateY(9px);transition:all .2s;z-index:40;font-size:12px}.toast.show{opacity:1;transform:translateY(0)}.modal{position:fixed;inset:0;background:rgba(8,27,43,.58);display:grid;place-items:center;z-index:50;padding:20px}.login-card{max-width:390px;width:100%;background:#fff;border-radius:20px;padding:33px 30px 27px;box-shadow:0 15px 70px #0003}.login-card h2{margin:13px 0 9px;font-size:23px}.login-card p{color:#73879a;line-height:1.5;font-size:12px;margin-bottom:21px}.login-card input{height:46px;border-radius:8px;width:100%;border:1px solid #d6e1e9;padding:0 13px;margin-bottom:15px}.login-card .btn{width:100%}.top-aux{display:flex;align-items:center;gap:12px}.version{font-size:11px;color:#b1bfcd}@media(max-width:1130px){.fields{grid-template-columns:repeat(2,minmax(0,1fr))}.chart-content{gap:8px}.main{padding:25px 23px 45px}}@media(max-width:810px){.sidebar{width:77px;padding:22px 9px}.brand{justify-content:center;padding:0 0 26px}.brand-copy,.nav-button span,.side-label,.side-bottom{display:none}.nav-button{justify-content:center;padding:13px}.main{padding:20px}.topbar{margin-bottom:22px}.head h1{font-size:24px}.chart-grid{grid-template-columns:1fr}}@media(max-width:560px){.shell{display:block}.sidebar{width:100%;flex-direction:row;align-items:center;padding:8px 15px;min-height:62px}.sidebar .brand{padding:0;margin-right:auto}.nav-button{width:auto;margin:0}.main{padding:18px 12px}.fields,.meta{grid-template-columns:1fr}.head{display:block}.head h1{font-size:23px}.top-pill{display:none}.form-body{padding:18px}.panel-heading{padding:20px}.form-actions{justify-content:stretch}.form-actions button{flex:1}.sheet-header img{width:88px}.sheet-institute h2{font-size:12px}.sheet-institute p{font-size:9px}.preview{padding:12px}.chart-content{flex-wrap:wrap}.chart-card{padding:12px}.pie{width:110px;height:110px}.report-actions{flex-direction:column;align-items:flex-start}.archive-table th:nth-child(2),.archive-table td:nth-child(2),.archive-table th:nth-child(3),.archive-table td:nth-child(3){display:none}}
+</style>
+</head>
+<body>
+<div class="shell">
+  <aside class="sidebar">
+    <div class="brand"><div class="mark">A<span style="color:#e7a549">&</span>R</div><div class="brand-copy"><strong>Feedback Portal</strong><span>Academic reporting workspace</span></div></div>
+    <div class="side-label">Workspace</div>
+    <button class="nav-button active" id="nav-create" onclick="switchPage('create')" aria-label="Generate report"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 9h8M8 13h8M8 17h5"/></svg><span>Generate report</span></button>
+    <button class="nav-button" id="nav-archive" onclick="switchPage('archive')" aria-label="Saved reports"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16v14H4zM3 3h18v3H3zM9 11h6"/></svg><span>Saved reports</span></button>
+    <div class="side-bottom"><strong>Automation & Robotics</strong><small>MET's Institute of Technology<br>Internal faculty workspace</small></div>
+  </aside>
+  <main class="main">
+    <div class="topbar"><div class="topbar-left">WORKSPACE <span>/</span> <b id="current-breadcrumb">Generate report</b></div><div class="top-aux"><span class="version">v1.0</span><div class="top-pill"><span class="dot"></span>Local workspace</div></div></div>
+    <section id="view-create">
+      <div class="head"><div><div class="eyebrow">Academic reporting</div><h1>Generate Feedback Report</h1><p class="subtitle">Enter academic details, build charts, and export a print-ready feedback report.</p></div></div>
+      <div class="panel">
+        <div class="panel-heading"><div><h2 class="panel-title">Report Information</h2><p class="panel-desc">Academic and subject details for the report header</p></div><span class="step">01 / Details</span></div>
+        <form id="report-form" class="form-body">
+          <div class="fields">
+            <div class="field"><label for="academic_year">Academic year / Batch *</label><input id="academic_year" placeholder="2022-23" pattern="[0-9]{4}-([0-9]{2}|[0-9]{4})" value="2022-23" required/><small>Example: 2022-23</small></div>
+            <div class="field"><label for="department">Department / Branch</label><input id="department" readonly value="Automation and Robotics"/><small>Preconfigured department</small></div>
+            <div class="field"><label for="semester">Semester *</label><select id="semester" required><option value="">Select semester</option><option value="1">Semester I</option><option value="2">Semester II</option><option value="3" selected>Semester III</option><option value="4">Semester IV</option><option value="5">Semester V</option><option value="6">Semester VI</option><option value="7">Semester VII</option><option value="8">Semester VIII</option></select></div>
+            <div class="field"><label for="subject_name">Subject name *</label><input id="subject_name" placeholder="e.g. Engineering Mathematics - III" maxlength="120" required/></div>
+            <div class="field"><label for="subject_code">Subject code *</label><input id="subject_code" placeholder="e.g. 25AF1000BS305" maxlength="120" required/></div>
+            <div class="field"><label for="faculty_name">Faculty name *</label><input id="faculty_name" placeholder="e.g. Prof. S. S. Borse" maxlength="120" required/></div>
+          </div>
+          <div class="form-actions"><button class="btn secondary" type="button" onclick="document.getElementById('report-form').reset()">Clear fields</button><button class="btn primary" id="generate-btn" type="submit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 3h10l4 4v14H5zM15 3v5h5M8 13h8M8 17h6"/></svg>Generate report</button></div>
+        </form>
+      </div>
+      <div class="info-strip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M12 11v6M12 7h.01"/></svg><div>Reports use the same 10 feedback parameters as the reference workbook. Generated data is calculated consistently across all charts and saved as a fixed report snapshot.</div></div>
+      <section id="report-block" class="report-block hidden">
+        <div class="report-actions"><div><div class="eyebrow">Report preview</div><h2 id="preview-title">Generated Feedback Report</h2></div><div class="action-buttons"><button class="btn secondary" onclick="regenerateReport()">↻ Regenerate</button><button class="btn primary" onclick="downloadPDF()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3v12m-5-5 5 5 5-5M5 17v4h14v-4"/></svg>Download PDF</button></div></div>
+        <div class="preview" id="report-preview"></div>
+      </section>
+    </section>
+    <section id="view-archive" class="hidden">
+      <div class="head"><div><div class="eyebrow">Records</div><h1>Saved Reports</h1><p class="subtitle">Reopen any earlier generated report, export the same data again, or create a new version.</p></div><button class="btn primary" onclick="switchPage('create')">+ New report</button></div>
+      <div class="panel archive-panel"><div class="archive-header"><div><h2 class="panel-title">Report Archive</h2><p class="panel-desc" id="archive-count">Saved generated reports</p></div><input class="filter-input" id="archive-search" placeholder="Search subject, code, year..." oninput="renderArchive()"/></div><div id="archive-table-wrap"></div></div>
+    </section>
+  </main>
+</div>
+<div id="toast" class="toast"></div>
+<div id="login-modal" class="modal hidden"><form class="login-card" id="login-form"><div class="mark">A<span style="color:#e7a549">&</span>R</div><h2>Welcome back</h2><p>Enter the admin password to access this local feedback reporting workspace.</p><input type="password" id="portal-password" autocomplete="current-password" placeholder="Admin password" required/><button class="btn primary" type="submit">Unlock workspace</button></form></div>
+<script>
+const COLORS=['#2377AC','#E6AC44','#61A59D','#C86F6A'];
+const $=selector=>document.querySelector(selector);
+let activeReport=null, archive=[];
+const svgIcon='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 5h16M4 12h16M4 19h16"/></svg>';
+function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));}
+function toast(msg){let el=$('#toast');el.textContent=msg;el.classList.add('show');clearTimeout(window._toastTimer);window._toastTimer=setTimeout(()=>el.classList.remove('show'),3500);}
+async function api(url,body){let options={credentials:'same-origin'};if(body!==undefined){options.method='POST';options.headers={'Content-Type':'application/json'};options.body=JSON.stringify(body);}const res=await fetch(url,options);let data=await res.json();if(!res.ok)throw Error(data.error||'Unable to complete request');return data;}
+function optionColor(q,index){let rank=q.best.indexOf(index);return COLORS[(q.options.length===3 && rank===2)?3:rank];}
+function pieMarkup(q){
+  const counts=q.counts;
+  const total=counts.reduce((a,b)=>a+b,0);
+  const cx=120, cy=80, r=50;
+  let angle=-90, paths='', labels=[];
+  counts.forEach((v,i)=>{
+    if(!v)return;
+    const span=v/total*360;
+    const start=angle*Math.PI/180, end=(angle+span)*Math.PI/180;
+    const x1=cx+r*Math.cos(start), y1=cy+r*Math.sin(start), x2=cx+r*Math.cos(end), y2=cy+r*Math.sin(end);
+    paths+=span>=359.999
+      ?`<circle cx="${cx}" cy="${cy}" r="${r}" fill="${optionColor(q,i)}"></circle>`
+      :`<path d="M${cx} ${cy} L${x1.toFixed(3)} ${y1.toFixed(3)} A${r} ${r} 0 ${span>180?1:0} 1 ${x2.toFixed(3)} ${y2.toFixed(3)} Z" fill="${optionColor(q,i)}" stroke="#fff" stroke-width="1.2"/>`;
+    const mid=(angle+span/2)*Math.PI/180;
+    labels.push({
+      option:q.options[i],
+      pct:(v/total*100).toFixed(1)+'%',
+      side:Math.cos(mid)>=0?'right':'left',
+      edgeX:cx+r*Math.cos(mid), edgeY:cy+r*Math.sin(mid),
+      outerX:cx+(r+8)*Math.cos(mid), outerY:cy+(r+8)*Math.sin(mid),
+      y:cy+(r+12)*Math.sin(mid)
+    });
+    angle+=span;
+  });
+  ['left','right'].forEach(side=>{
+    const items=labels.filter(x=>x.side===side).sort((a,b)=>a.y-b.y);
+    for(let k=1;k<items.length;k++) if(items[k].y-items[k-1].y<16) items[k].y=items[k-1].y+16;
+    if(items.length){
+      const maxY=138, minY=22;
+      if(items[items.length-1].y>maxY){
+        const shift=items[items.length-1].y-maxY; items.forEach(it=>it.y-=shift);
+      }
+      if(items[0].y<minY){
+        const shift=minY-items[0].y; items.forEach(it=>it.y+=shift);
+      }
+    }
+  });
+  const callouts=labels.map(item=>{
+    const lineEnd=item.side==='right'?212:28;
+    const textAnchor=item.side==='right'?'start':'end';
+    const textX=item.side==='right'?216:24;
+    return `<path d="M${item.edgeX.toFixed(2)} ${item.edgeY.toFixed(2)} L${item.outerX.toFixed(2)} ${item.outerY.toFixed(2)} L${lineEnd} ${item.y.toFixed(2)}" fill="none" stroke="#8a8a8a" stroke-width="1"/>`
+      + `<text x="${textX}" y="${(item.y-2).toFixed(2)}" font-size="10" fill="#000" text-anchor="${textAnchor}">${escapeHtml(item.option)}</text>`
+      + `<text x="${textX}" y="${(item.y+10).toFixed(2)}" font-size="9" fill="#666" text-anchor="${textAnchor}">${item.pct}</text>`;
+  }).join('');
+  return `<svg class="chart-svg" viewBox="0 0 240 160" role="img" aria-label="Pie chart of answer percentages">${paths}${callouts}</svg>`;
+}
+function chartCard(q,i,n){return `<div class="chart-card"><h3>${String(i+1).padStart(2,'0')}. ${escapeHtml(q.title)}</h3><div class="chart-content">${pieMarkup(q)}</div><div class="chart-foot">Total: ${n}</div></div>`;}
+function renderPreview(report){activeReport=report;const n=report.respondent_count;$('#preview-title').textContent=report.subject_name+' · '+report.academic_year;$('#report-preview').innerHTML=`
+<div class="sheet-header"><img alt="College logo" src="/assets/college_logo.png"><div class="sheet-institute"><h2>MET's Institute of Technology (P) B. Tech.</h2><p>Affiliated to Dr. Babasaheb Ambedkar Technological University, Lonere.</p></div></div>
+<div class="sheet-subhead"><strong>Department of Automation and Robotics</strong><div>End Semester Feedback · A.Y. ${escapeHtml(report.academic_year)}</div></div>
+<div class="meta"><div><label>Subject code</label>${escapeHtml(report.subject_code)}</div><div><label>Semester</label>${escapeHtml(report.semester)}</div><div><label>Subject</label>${escapeHtml(report.subject_name)}</div><div><label>Faculty / Staff</label>${escapeHtml(report.faculty_name)}</div></div>
+<div class="chart-grid">${report.questions.map((q,i)=>chartCard(q,i,n)).join('')}</div>
+<div class="remarks"><h4>REMARKS</h4><p>Remark Subject Teacher:</p><p>Remark HoD:</p></div><div class="small-note">Internal working report · Figures are system-generated and do not represent collected student responses.</div>`;
+$('#report-block').classList.remove('hidden');}
+function populateForm(r){['academic_year','semester','subject_name','subject_code','faculty_name'].forEach(key=>$('#'+key).value=r[key]);}
+async function generate(form){let button=$('#generate-btn');button.disabled=true;button.textContent='Generating…';try{let r=await api('/api/report',form);renderPreview(r);toast('Report generated and saved.');$('#report-block').scrollIntoView({behavior:'smooth',block:'start'});}catch(e){toast(e.message);}finally{button.disabled=false;button.textContent='Generate report';}}
+$('#report-form').addEventListener('submit',function(e){e.preventDefault();generate({academic_year:$('#academic_year').value.trim(),semester:Number($('#semester').value),subject_name:$('#subject_name').value.trim(),subject_code:$('#subject_code').value.trim(),faculty_name:$('#faculty_name').value.trim()});});
+async function regenerateReport(){if(!activeReport)return;try{const r=await api('/api/report/'+activeReport.id+'/regenerate',{});renderPreview(r);toast('Fresh numbers generated; earlier report preserved.');}catch(e){toast(e.message);}}
+function downloadPDF(){if(activeReport)window.location.href='/api/report/'+activeReport.id+'/pdf';}
+function switchPage(page){let creating=page==='create';$('#view-create').classList.toggle('hidden',!creating);$('#view-archive').classList.toggle('hidden',creating);$('#nav-create').classList.toggle('active',creating);$('#nav-archive').classList.toggle('active',!creating);$('#current-breadcrumb').textContent=creating?'Generate report':'Saved reports';if(!creating)loadArchive();window.scrollTo({top:0,behavior:'smooth'});}
+async function loadArchive(){try{archive=await api('/api/reports');renderArchive();}catch(e){toast(e.message);}}
+function renderArchive(){const query=$('#archive-search').value.toLowerCase(),filtered=archive.filter(r=>[r.academic_year,r.subject_name,r.subject_code,r.faculty_name,String(r.semester)].some(x=>String(x).toLowerCase().includes(query)));$('#archive-count').textContent=archive.length+' stored report'+(archive.length===1?'':'s');let wrap=$('#archive-table-wrap');if(!filtered.length){wrap.innerHTML=`<div class="empty">${svgIcon}<h3>No matching reports</h3><p>Generate a report or change your search.</p></div>`;return;}wrap.innerHTML=`<table class="archive-table"><thead><tr><th>Subject</th><th>Academic year</th><th>Semester</th><th>Faculty</th><th>Action</th></tr></thead><tbody>${filtered.map(r=>`<tr><td><strong>${escapeHtml(r.subject_name)}</strong><small>${escapeHtml(r.subject_code)}</small></td><td>${escapeHtml(r.academic_year)}</td><td>${escapeHtml(r.semester)}</td><td>${escapeHtml(r.faculty_name)}</td><td><button class="link-btn" onclick="openReport('${r.id}')">Open ↗</button></td></tr>`).join('')}</tbody></table>`;}
+async function openReport(id){try{let r=await api('/api/report/'+id);switchPage('create');populateForm(r);renderPreview(r);$('#report-block').scrollIntoView({behavior:'smooth',block:'start'});}catch(e){toast(e.message);}}
+$('#login-form').addEventListener('submit',async(e)=>{e.preventDefault();try{await api('/api/login',{password:$('#portal-password').value});$('#login-modal').classList.add('hidden');$('#portal-password').value='';toast('Workspace unlocked.');}catch(err){toast(err.message);}});
+(async()=>{try{let config=await api('/api/config');if(config.auth_required&&!config.authenticated)$('#login-modal').classList.remove('hidden');}catch(e){toast('Portal connection problem: '+e.message);}})();
+</script>
+</body>
+</html>
