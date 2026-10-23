@@ -39,7 +39,7 @@ pnpm-debug.log*
 
 # Generated reports and PDFs
 *.pdf
-reports/
+/reports/
 generated/
 
 # Database files
