@@ -1,30 +1,56 @@
 'use client';
 
-import { useState, useEffect, useRef, FormEvent, ChangeEvent } from 'react';
+import { useState, useEffect, useRef, FormEvent, MouseEvent, ChangeEvent } from 'react';
 import { AcademicInputSchema } from '@/lib/validation/input';
 import type { AcademicInput } from '@/lib/validation/input';
-import type { ReportSnapshot } from '@/lib/types/report';
+import type { ReportSnapshot, FeedbackPeriod } from '@/lib/types/report';
 
 interface ReportFormProps {
   onGenerate: (report: ReportSnapshot) => void;
   initialReport?: ReportSnapshot | null;
 }
 
+const fieldKeyMap: Record<string, keyof AcademicInput> = {
+  academic_year: 'academicYear',
+  academicYear: 'academicYear',
+  semester: 'semester',
+  subject_name: 'subjectName',
+  subjectName: 'subjectName',
+  subject_code: 'subjectCode',
+  subjectCode: 'subjectCode',
+  faculty_name: 'facultyName',
+  facultyName: 'facultyName',
+  period: 'period',
+};
+
+const emptyFormData: AcademicInput = {
+  academicYear: '',
+  semester: '' as unknown as number,
+  subjectName: '',
+  subjectCode: '',
+  facultyName: '',
+  period: '' as unknown as FeedbackPeriod,
+};
+
 export function ReportForm({ onGenerate, initialReport }: ReportFormProps) {
-  const [formData, setFormData] = useState<AcademicInput>(() => ({
-    academicYear: '2022-23',
-    semester: 3,
-    subjectName: '',
-    subjectCode: '',
-    facultyName: '',
-    period: 'MID',
-  }));
+  const [formData, setFormData] = useState<AcademicInput>(() => {
+    if (initialReport) {
+      return {
+        academicYear: initialReport.academic.academicYear,
+        semester: initialReport.academic.semester,
+        subjectName: initialReport.academic.subjectName,
+        subjectCode: initialReport.academic.subjectCode,
+        facultyName: initialReport.academic.facultyName,
+        period: initialReport.period,
+      };
+    }
+    return { ...emptyFormData };
+  });
   
   const [errors, setErrors] = useState<Partial<Record<keyof AcademicInput, string>>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const initialReportRef = useRef<ReportSnapshot | null>(null);
 
-  // Sync form data with initialReport prop changes using ref to avoid effect warning
   useEffect(() => {
     if (initialReport && initialReport !== initialReportRef.current) {
       initialReportRef.current = initialReport;
@@ -36,36 +62,37 @@ export function ReportForm({ onGenerate, initialReport }: ReportFormProps) {
         facultyName: initialReport.academic.facultyName,
         period: initialReport.period,
       });
+      setErrors({});
     }
   }, [initialReport]);
 
-  const validateField = (name: keyof AcademicInput, value: string | number): string | null => {
-    const testData = { ...formData, [name]: value };
-    const result = AcademicInputSchema.safeParse(testData);
-    if (!result.success) {
-      return result.error.errors[0].message;
-    }
-    return null;
-  };
-
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    const typedValue = name === 'semester' ? parseInt(value, 10) : value;
-    setFormData(prev => ({ ...prev, [name]: typedValue }));
+    const { name, id, value } = e.target;
+    const fieldKey = fieldKeyMap[name] || fieldKeyMap[id] || (name as keyof AcademicInput);
+    const typedValue = fieldKey === 'semester' ? (value === '' ? '' : parseInt(value, 10)) : value;
     
-    const error = validateField(name as keyof AcademicInput, typedValue);
-    setErrors(prev => ({ ...prev, [name]: error || undefined }));
+    setFormData(prev => ({ ...prev, [fieldKey]: typedValue }));
+    
+    if (errors[fieldKey]) {
+      setErrors(prev => ({ ...prev, [fieldKey]: undefined }));
+    }
   };
 
-  const handleSubmit = async (e: FormEvent) => {
+  const handleClear = () => {
+    setFormData({ ...emptyFormData });
+    setErrors({});
+  };
+
+  const handleSubmit = async (e: FormEvent | MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     
     const result = AcademicInputSchema.safeParse(formData);
     if (!result.success) {
       const fieldErrors: Partial<Record<keyof AcademicInput, string>> = {};
       result.error.errors.forEach(err => {
-        if (err.path[0]) {
-          fieldErrors[err.path[0] as keyof AcademicInput] = err.message;
+        const key = err.path[0] as keyof AcademicInput;
+        if (key && !fieldErrors[key]) {
+          fieldErrors[key] = err.message;
         }
       });
       setErrors(fieldErrors);
@@ -92,13 +119,8 @@ export function ReportForm({ onGenerate, initialReport }: ReportFormProps) {
     }
   };
 
-  const periodLabels = {
-    MID: 'Mid Semester',
-    END: 'End Semester',
-  };
-
   return (
-    <form onSubmit={handleSubmit} className="form-body" noValidate>
+    <form onSubmit={handleSubmit} action="javascript:void(0)" className="form-body" noValidate>
       <div className="fields">
         <div className="field">
           <label htmlFor="academic_year">Academic Year / Batch *</label>
@@ -106,17 +128,16 @@ export function ReportForm({ onGenerate, initialReport }: ReportFormProps) {
             id="academic_year"
             name="academic_year"
             type="text"
-            placeholder="2022-23"
-            pattern="[0-9]{4}-([0-9]{2}|[0-9]{4})"
-            value={formData.academicYear}
+            placeholder="e.g. 2022-23"
+            value={formData.academicYear || ''}
             onChange={handleChange}
             required
             aria-invalid={!!errors.academicYear}
             aria-describedby={errors.academicYear ? 'academic_year-error' : undefined}
           />
-          <small>Example: 2022-23</small>
+          <small>Format: YYYY-YY (e.g. 2022-23)</small>
           {errors.academicYear && (
-            <span id="academic_year-error" className="field-error" style={{ color: '#dc2626', fontSize: '11px' }}>
+            <span id="academic_year-error" role="alert" className="field-error">
               {errors.academicYear}
             </span>
           )}
@@ -140,7 +161,7 @@ export function ReportForm({ onGenerate, initialReport }: ReportFormProps) {
           <select
             id="semester"
             name="semester"
-            value={formData.semester}
+            value={formData.semester || ''}
             onChange={handleChange}
             required
             aria-invalid={!!errors.semester}
@@ -157,7 +178,7 @@ export function ReportForm({ onGenerate, initialReport }: ReportFormProps) {
             <option value="8">Semester VIII</option>
           </select>
           {errors.semester && (
-            <span id="semester-error" className="field-error" style={{ color: '#dc2626', fontSize: '11px' }}>
+            <span id="semester-error" role="alert" className="field-error">
               {errors.semester}
             </span>
           )}
@@ -171,14 +192,14 @@ export function ReportForm({ onGenerate, initialReport }: ReportFormProps) {
             type="text"
             placeholder="e.g. Engineering Mathematics - III"
             maxLength={120}
-            value={formData.subjectName}
+            value={formData.subjectName || ''}
             onChange={handleChange}
             required
             aria-invalid={!!errors.subjectName}
             aria-describedby={errors.subjectName ? 'subject_name-error' : undefined}
           />
           {errors.subjectName && (
-            <span id="subject_name-error" className="field-error" style={{ color: '#dc2626', fontSize: '11px' }}>
+            <span id="subject_name-error" role="alert" className="field-error">
               {errors.subjectName}
             </span>
           )}
@@ -190,16 +211,16 @@ export function ReportForm({ onGenerate, initialReport }: ReportFormProps) {
             id="subject_code"
             name="subject_code"
             type="text"
-            placeholder="e.g. 25AF1000BS305"
+            placeholder="e.g. AR2301"
             maxLength={120}
-            value={formData.subjectCode}
+            value={formData.subjectCode || ''}
             onChange={handleChange}
             required
             aria-invalid={!!errors.subjectCode}
             aria-describedby={errors.subjectCode ? 'subject_code-error' : undefined}
           />
           {errors.subjectCode && (
-            <span id="subject_code-error" className="field-error" style={{ color: '#dc2626', fontSize: '11px' }}>
+            <span id="subject_code-error" role="alert" className="field-error">
               {errors.subjectCode}
             </span>
           )}
@@ -213,36 +234,44 @@ export function ReportForm({ onGenerate, initialReport }: ReportFormProps) {
             type="text"
             placeholder="e.g. Prof. S. S. Borse"
             maxLength={120}
-            value={formData.facultyName}
+            value={formData.facultyName || ''}
             onChange={handleChange}
             required
             aria-invalid={!!errors.facultyName}
             aria-describedby={errors.facultyName ? 'faculty_name-error' : undefined}
           />
           {errors.facultyName && (
-            <span id="faculty_name-error" className="field-error" style={{ color: '#dc2626', fontSize: '11px' }}>
+            <span id="faculty_name-error" role="alert" className="field-error">
               {errors.facultyName}
             </span>
           )}
         </div>
         
-        <div className="field">
-          <label htmlFor="period">Feedback Period *</label>
-          <div className="period-selector" role="radiogroup" aria-label="Feedback period">
-            {(['MID', 'END'] as const).map((period) => (
-              <label key={period} className={`period-option ${formData.period === period ? 'period-option-active' : ''}`}>
+        <div className="field field-full">
+          <label id="period-label">Feedback Period *</label>
+          <div
+            className="period-selector"
+            role="radiogroup"
+            aria-labelledby="period-label"
+            aria-describedby={errors.period ? 'period-error' : undefined}
+          >
+            {(['MID', 'END'] as const).map((p) => (
+              <label
+                key={p}
+                className={`period-option ${formData.period === p ? 'period-option-active' : ''}`}
+              >
                 <input
                   type="radio"
                   name="period"
-                  value={period}
-                  checked={formData.period === period}
-                  onChange={(e) => handleChange(e as unknown as ChangeEvent<HTMLInputElement>)}
+                  value={p}
+                  checked={formData.period === p}
+                  onChange={handleChange}
                   required
                 />
                 <span className="period-option-content">
-                  <span className="period-option-label">{period === 'MID' ? 'Mid Semester' : 'End Semester'}</span>
+                  <span className="period-option-label">{p === 'MID' ? 'Mid Semester' : 'End Semester'}</span>
                   <span className="period-option-desc">
-                    {period === 'MID' 
+                    {p === 'MID' 
                       ? 'Feedback collected mid-way through the semester' 
                       : 'Feedback collected at the end of the semester'}
                   </span>
@@ -251,7 +280,7 @@ export function ReportForm({ onGenerate, initialReport }: ReportFormProps) {
             ))}
           </div>
           {errors.period && (
-            <span id="period-error" className="field-error" style={{ color: '#dc2626', fontSize: '11px' }}>
+            <span id="period-error" role="alert" className="field-error">
               {errors.period}
             </span>
           )}
@@ -262,14 +291,7 @@ export function ReportForm({ onGenerate, initialReport }: ReportFormProps) {
         <button
           type="button"
           className="btn secondary"
-          onClick={() => setFormData({
-            academicYear: '2022-23',
-            semester: 3,
-            subjectName: '',
-            subjectCode: '',
-            facultyName: '',
-            period: 'MID',
-          })}
+          onClick={handleClear}
           disabled={isSubmitting}
         >
           Clear fields
@@ -277,12 +299,13 @@ export function ReportForm({ onGenerate, initialReport }: ReportFormProps) {
         <button
           type="submit"
           className="btn primary"
+          onClick={handleSubmit}
           disabled={isSubmitting}
         >
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} aria-hidden="true">
             <path d="M5 3h10l4 4v14H5zM15 3v5h5M8 13h8M8 17h6" />
           </svg>
-          {isSubmitting ? 'Generating…' : 'Generate Report'}
+          {isSubmitting ? 'Generating...' : 'Generate Report'}
         </button>
       </div>
     </form>

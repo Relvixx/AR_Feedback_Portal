@@ -65,3 +65,13 @@ __pycache__/
 
 # TypeScript cache
 *.tsbuildinfo
+
+# Playwright and test artifacts
+playwright-report/
+test-results/
+test-artifacts/
+v3/playwright-report/
+v3/test-results/
+v3/test-artifacts/
+v3/scripts/test-artifacts/
+v3/AGENTS.md

@@ -9,7 +9,7 @@ interface NavigationProps {
 
 export function Navigation({ currentPage, onNavigate }: NavigationProps) {
   const navItems = [
-    { id: 'create', label: 'Generate report', icon: CreateIcon },
+    { id: 'create', label: 'Create report', icon: CreateIcon },
     { id: 'archive', label: 'Saved reports', icon: ArchiveIcon },
   ] as const;
   

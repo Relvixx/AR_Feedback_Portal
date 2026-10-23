@@ -561,7 +561,7 @@ a {
 
 .page-head > div {
   flex: 1;
-  min-width: 280px;
+  min-width: 0;
 }
 
 .eyebrow {
@@ -603,6 +603,8 @@ a {
 }
 
 .info-strip svg {
+  width: 20px;
+  height: 20px;
   flex-shrink: 0;
   margin-top: 2px;
   color: var(--blue);
@@ -612,6 +614,8 @@ a {
   font-size: 13px;
   color: var(--ink);
   line-height: 1.5;
+  min-width: 0;
+  flex: 1;
 }
 
 .report-block {
@@ -1341,4 +1345,325 @@ a {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* Responsive layout rules */
+@media (min-width: 768px) {
+  .mobile-header {
+    display: none !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .app-shell {
+    flex-direction: column !important;
+    width: 100% !important;
+  }
+  .sidebar {
+    display: none !important;
+  }
+  .main-content {
+    padding: 16px 14px 40px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  .fields {
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+  }
+  .period-selector {
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+  .chart-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .archive-filters {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+  .archive-filters .filter-group {
+    width: 100% !important;
+  }
+  .archive-filters .filter-input {
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: 24px;
+  margin-bottom: 24px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+@media (max-width: 767px) {
+  .panel {
+    padding: 16px 12px;
+  }
+}
+
+.panel-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.panel-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--ink);
+  margin: 0 0 4px;
+}
+
+.panel-desc {
+  font-size: 13px;
+  color: var(--muted);
+  margin: 0;
+}
+
+.step {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--blue);
+  background: var(--blue-light);
+  padding: 4px 10px;
+  border-radius: 9999px;
+}
+
+.form-body {
+  width: 100%;
+}
+
+.fields {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  width: 100%;
+}
+
+.field-full {
+  grid-column: 1 / -1;
+}
+
+.field label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.field input[type="text"],
+.field select {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 14px;
+  background: #fff;
+  color: var(--ink);
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+.field input[type="text"]:focus,
+.field select:focus {
+  outline: none;
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(36, 107, 165, 0.15);
+}
+
+.field input[aria-invalid="true"],
+.field select[aria-invalid="true"] {
+  border-color: #dc2626;
+  background: #fffafa;
+}
+
+.field small {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.field-error {
+  margin-top: 4px;
+  display: block;
+  font-size: 11px;
+  color: #dc2626;
+  font-weight: 500;
+}
+
+.period-selector {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+}
+
+.period-option {
+  flex: 1;
+  position: relative;
+  cursor: pointer;
+}
+
+.period-option input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.period-option-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 16px 12px;
+  background: white;
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  transition: all var(--transition);
+  text-align: center;
+}
+
+.period-option:hover .period-option-content {
+  border-color: var(--blue);
+  background: var(--soft);
+}
+
+.period-option-active .period-option-content {
+  border-color: var(--blue);
+  background: var(--blue-light);
+  box-shadow: 0 0 0 3px rgba(36, 107, 165, 0.15);
+}
+
+.period-option-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.period-option-desc {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+
+.mobile-nav-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 199;
+}
+
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: white;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: var(--radius);
+  font-weight: 600;
+  font-size: 14px;
+  border: 1px solid transparent;
+  transition: all var(--transition);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.btn.primary {
+  background: var(--blue);
+  color: white;
+}
+
+.btn.primary:hover:not(:disabled) {
+  background: var(--blue-hover);
+}
+
+.btn.secondary {
+  background: white;
+  border-color: var(--border-strong);
+  color: var(--ink);
+}
+
+.btn.secondary:hover:not(:disabled) {
+  background: var(--soft);
+  border-color: var(--blue);
+}
+
+.btn.ghost {
+  background: transparent;
+  color: var(--muted);
+  border-color: var(--border);
+}
+
+.btn.ghost:hover:not(:disabled) {
+  background: var(--soft);
+  color: var(--ink);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.legend-color {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.legend-label {
+  font-size: 11px;
+  color: #172b3a;
+  flex: 1;
+}
+
+.legend-percent {
+  font-size: 11px;
+  color: #617386;
+  font-weight: 600;
 }

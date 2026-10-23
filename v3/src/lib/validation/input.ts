@@ -50,7 +50,9 @@ export const AcademicInputSchema = z.object({
     'Academic year must be in format YYYY-YY or YYYY-YYYY'
   ).refine(
     (val) => {
+      if (!ACADEMIC_YEAR_REGEX.test(val)) return true;
       const [left, right] = val.split('-');
+      if (!left || !right) return false;
       const leftNum = parseInt(left, 10);
       const rightNum = parseInt(right, 10);
       return rightNum === (leftNum + 1) % (right.length === 2 ? 100 : 10000);

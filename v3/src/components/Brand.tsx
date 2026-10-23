@@ -17,15 +17,24 @@ export function Brand({ variant = 'full', className = '' }: BrandProps) {
     return () => window.removeEventListener('resize', updateWidth);
   }, []);
   
-  // Auto-switch to compact/icon on narrow viewports
-  const effectiveVariant = width < 480 ? 'icon' : width < 768 ? 'compact' : variant;
+  const effectiveVariant = width > 0 && width < 480 ? 'icon' : width > 0 && width < 768 ? 'compact' : variant;
   
   return (
     <div className={`brand ${className}`} data-variant={effectiveVariant}>
       <div className="brand-mark" aria-hidden="true">
         <svg viewBox="0 0 40 42" fill="none" xmlns="http://www.w3.org/2000/svg" width="40" height="42">
           <rect width="40" height="42" rx="11" fill="#f7fafc"/>
-          <text x="50%" y="56%" dominant-baseline="central" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="19" font-weight="850" fill="#143e62" letter-spacing="-0.5px">
+          <text
+            x="50%"
+            y="56%"
+            dominantBaseline="central"
+            textAnchor="middle"
+            fontFamily="Inter, system-ui, sans-serif"
+            fontSize="19"
+            fontWeight="850"
+            fill="#143e62"
+            letterSpacing="-0.5px"
+          >
             A<tspan fill="#e7a549">&</tspan>R
           </text>
         </svg>

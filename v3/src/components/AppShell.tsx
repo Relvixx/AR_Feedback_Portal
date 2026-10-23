@@ -28,21 +28,24 @@ export function AppShell({ children, currentPage, onNavigate }: AppShellProps) {
   
   return (
     <div className="app-shell">
-      <header className="mobile-header">
-        <Brand variant={isMobile ? 'compact' : 'full'} />
-        {isMobile && (
+      {/* Mobile top header - only displayed on viewports < 768px */}
+      {isMobile && (
+        <header className="mobile-header">
+          <Brand variant="compact" />
           <button
             className="mobile-menu-btn"
             onClick={() => setSidebarOpen(true)}
             aria-label="Open navigation"
+            aria-expanded={sidebarOpen}
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} aria-hidden="true">
               <path d="M3 12h18M3 6h18M3 18h18" />
             </svg>
           </button>
-        )}
-      </header>
+        </header>
+      )}
       
+      {/* Mobile Drawer Navigation (only rendered when mobile) */}
       {isMobile && (
         <MobileNav
           isOpen={sidebarOpen}
@@ -55,26 +58,18 @@ export function AppShell({ children, currentPage, onNavigate }: AppShellProps) {
         />
       )}
       
-      <aside 
-        className={`sidebar ${isMobile ? 'sidebar-mobile' : ''} ${sidebarOpen ? 'sidebar-open' : ''}`}
-        aria-hidden={isMobile && !sidebarOpen}
-      >
-        <div className="sidebar-header">
-          <Brand variant={isMobile ? 'compact' : 'full'} />
-        </div>
-        <Navigation currentPage={currentPage} onNavigate={onNavigate} />
-        <div className="sidebar-footer">
-          <strong>Automation & Robotics</strong>
-          <small>MET&apos;s Institute of Technology<br />Internal faculty workspace</small>
-        </div>
-      </aside>
-      
-      {isMobile && sidebarOpen && (
-        <div 
-          className="sidebar-overlay" 
-          onClick={() => setSidebarOpen(false)}
-          aria-hidden="true"
-        />
+      {/* Desktop Sidebar (only for tablet/desktop >= 768px) */}
+      {!isMobile && (
+        <aside className="sidebar" aria-label="Main desktop navigation">
+          <div className="sidebar-header">
+            <Brand variant="full" />
+          </div>
+          <Navigation currentPage={currentPage} onNavigate={onNavigate} />
+          <div className="sidebar-footer">
+            <strong>Automation & Robotics</strong>
+            <small>MET&apos;s Institute of Technology<br />Internal faculty workspace</small>
+          </div>
+        </aside>
       )}
       
       <main className="main-content" role="main">
