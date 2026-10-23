@@ -66,7 +66,7 @@ function esc(s: string | number): string {
 // Text wrapping for callout labels
 // ---------------------------------------------------------------------------
 
-function wrapText(text: string, maxCharsPerLine: number = 15): string[] {
+function wrapText(text: string, maxCharsPerLine: number = 13): string[] {
   const words = text.split(' ');
   const lines: string[] = [];
   let cur = '';
@@ -106,39 +106,39 @@ export interface QuestionChartInput {
 }
 
 // ---------------------------------------------------------------------------
-// Arrow-Based SVG Pie Chart Renderer with 1D Spacing Solver
+// Arrow-Based SVG Pie Chart Renderer with Dynamic Spacing Solver (Phase 3.2)
 // ---------------------------------------------------------------------------
 
 export function renderArrowPieChart(
   chart: QuestionChartInput,
   cardWidth: number = 340,
-  cardHeight: number = 205
+  cardHeight: number = 230
 ): string {
   const { number: qNum, title, slices, total } = chart;
   const cx = 170;
-  const cy = 100;
-  const r = 46;
+  const cy = 115;
+  const r = 44;
 
   const activeSlices = slices.filter(s => s.count > 0);
 
   // Single 100% slice edge case
   if (activeSlices.length === 1) {
     const s = activeSlices[0];
-    const lines = wrapText(s.label, 18);
+    const lines = wrapText(s.label, 14);
     const arrowX = cx + r;
     const arrowY = cy;
-    const labelX = cx + r + 30;
+    const labelX = cx + r + 32;
     const num = String(qNum).padStart(2, '0');
     return `<div class="chart-card">
       <div class="chart-title">${num}. ${esc(title)}</div>
       <div class="chart-body">
         <svg viewBox="0 0 ${cardWidth} ${cardHeight}" width="100%" class="chart-svg">
           <circle cx="${cx}" cy="${cy}" r="${r}" fill="${s.color}" stroke="#fff" stroke-width="1.2"/>
-          <line x1="${arrowX + 4}" y1="${arrowY}" x2="${labelX - 4}" y2="${arrowY}" stroke="${s.color}" stroke-width="1.2"/>
-          <polygon points="${arrowX},${arrowY} ${arrowX + 6},${arrowY - 3} ${arrowX + 6},${arrowY + 3}" fill="${s.color}"/>
-          <text x="${labelX}" y="${arrowY - 4}" text-anchor="start" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif">
-            ${lines.map((l, li) => `<tspan x="${labelX}" dy="${li === 0 ? 0 : 10.5}" font-size="8" font-weight="600" fill="#1a1a1a">${esc(l)}</tspan>`).join('')}
-            <tspan x="${labelX}" dy="11.5" font-size="8.5" font-weight="700" fill="${s.color}">${s.pct.toFixed(1)}% <tspan font-weight="400" fill="#666" font-size="7.5">(${s.count})</tspan></tspan>
+          <line x1="${arrowX + 4}" y1="${arrowY}" x2="${labelX - 4}" y2="${arrowY}" stroke="${s.color}" stroke-width="1.3"/>
+          <polygon points="${arrowX},${arrowY} ${arrowX + 6.5},${arrowY - 3.2} ${arrowX + 6.5},${arrowY + 3.2}" fill="${s.color}"/>
+          <text x="${labelX}" y="${arrowY - 6}" text-anchor="start" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif">
+            ${lines.map((l, li) => `<tspan x="${labelX}" dy="${li === 0 ? 0 : 14.0}" font-size="11.4" font-weight="600" fill="#1a1a1a">${esc(l)}</tspan>`).join('')}
+            <tspan x="${labelX}" dy="15.0" font-size="11.8" font-weight="700" fill="${s.color}">${s.pct.toFixed(1)}% <tspan font-weight="400" fill="#555" font-size="10.4">(${s.count})</tspan></tspan>
           </text>
         </svg>
       </div>
@@ -213,8 +213,8 @@ export function renderArrowPieChart(
     const callouts: CalloutItem[] = items.map(item => {
       const p0 = { x: cx + r * item.cosMid, y: cy + r * item.sinMid };
       const p1 = { x: cx + (r + 7) * item.cosMid, y: cy + (r + 7) * item.sinMid };
-      const lines = wrapText(item.slice.label, 15);
-      const blockHeight = lines.length * 10.5 + 11.5;
+      const lines = wrapText(item.slice.label, 13);
+      const blockHeight = (lines.length - 1) * 14.0 + 15.0 + 11.8;
 
       return {
         slice: item.slice,
@@ -222,8 +222,8 @@ export function renderArrowPieChart(
         p1,
         p2: { x: 0, y: 0 },
         p3: { x: 0, y: 0 },
-        labelX: isRight ? 240 : 100,
-        labelY: p0.y - (blockHeight / 2) + 6,
+        labelX: isRight ? 236 : 104,
+        labelY: p0.y - (blockHeight / 2) + 4,
         lines,
         blockHeight,
         isRight,
@@ -231,20 +231,20 @@ export function renderArrowPieChart(
     });
 
     // 1D spacing relaxation to prevent collisions
-    const minY = 16;
-    const maxY = cardHeight - 16;
-    const minGap = 28;
+    const minY = 14;
+    const maxY = cardHeight - 14;
+    const minGap = 30;
 
     for (const c of callouts) {
       c.labelY = Math.max(minY, Math.min(maxY - c.blockHeight, c.labelY));
     }
 
-    for (let iter = 0; iter < 12; iter++) {
+    for (let iter = 0; iter < 15; iter++) {
       let moved = false;
       for (let i = 0; i < callouts.length - 1; i++) {
         const c1 = callouts[i];
         const c2 = callouts[i + 1];
-        const reqGap = Math.max(minGap, c1.blockHeight + 3);
+        const reqGap = Math.max(minGap, c1.blockHeight + 5);
         if (c2.labelY - c1.labelY < reqGap) {
           const overlap = reqGap - (c2.labelY - c1.labelY);
           c1.labelY -= overlap / 2;
@@ -262,7 +262,7 @@ export function renderArrowPieChart(
     for (let i = 0; i < callouts.length - 1; i++) {
       const c1 = callouts[i];
       const c2 = callouts[i + 1];
-      const reqGap = Math.max(minGap, c1.blockHeight + 3);
+      const reqGap = Math.max(minGap, c1.blockHeight + 5);
       if (c2.labelY < c1.labelY + reqGap) {
         c2.labelY = c1.labelY + reqGap;
       }
@@ -270,13 +270,13 @@ export function renderArrowPieChart(
 
     // Route elbow leader lines
     for (const c of callouts) {
-      const attachY = c.labelY + 4;
+      const attachY = c.labelY + 2;
       if (isRight) {
-        const elbowX = Math.max(c.p1.x + 8, cx + r + 16);
+        const elbowX = Math.max(c.p1.x + 8, cx + r + 14);
         c.p2 = { x: elbowX, y: attachY };
         c.p3 = { x: c.labelX - 4, y: attachY };
       } else {
-        const elbowX = Math.min(c.p1.x - 8, cx - r - 16);
+        const elbowX = Math.min(c.p1.x - 8, cx - r - 14);
         c.p2 = { x: elbowX, y: attachY };
         c.p3 = { x: c.labelX + 4, y: attachY };
       }
@@ -295,8 +295,8 @@ export function renderArrowPieChart(
 
   for (const c of allCallouts) {
     const rad = Math.atan2(c.p0.y - cy, c.p0.x - cx);
-    const arrowLen = 5.0;
-    const arrowWidth = 2.6;
+    const arrowLen = 5.5;
+    const arrowWidth = 2.8;
     const udx = Math.cos(rad);
     const udy = Math.sin(rad);
     const perpX = -udy;
@@ -310,17 +310,17 @@ export function renderArrowPieChart(
     const a2y = by - perpY * arrowWidth;
 
     const arrowHead = `<polygon points="${c.p0.x.toFixed(1)},${c.p0.y.toFixed(1)} ${a1x.toFixed(1)},${a1y.toFixed(1)} ${a2x.toFixed(1)},${a2y.toFixed(1)}" fill="${c.slice.color}"/>`;
-    const leaderLine = `<path d="M${bx.toFixed(1)} ${by.toFixed(1)} L${c.p1.x.toFixed(1)} ${c.p1.y.toFixed(1)} L${c.p2.x.toFixed(1)} ${c.p2.y.toFixed(1)} L${c.p3.x.toFixed(1)} ${c.p3.y.toFixed(1)}" fill="none" stroke="${c.slice.color}" stroke-width="1.1"/>`;
+    const leaderLine = `<path d="M${bx.toFixed(1)} ${by.toFixed(1)} L${c.p1.x.toFixed(1)} ${c.p1.y.toFixed(1)} L${c.p2.x.toFixed(1)} ${c.p2.y.toFixed(1)} L${c.p3.x.toFixed(1)} ${c.p3.y.toFixed(1)}" fill="none" stroke="${c.slice.color}" stroke-width="1.2"/>`;
 
     svgConnectors += `${leaderLine}\n        ${arrowHead}\n        `;
 
     const anchor = c.isRight ? 'start' : 'end';
     const linesSvg = c.lines.map((line, li) => {
-      const dy = li === 0 ? 0 : 10.5;
-      return `<tspan x="${c.labelX}" dy="${dy}" font-size="8" font-weight="600" fill="#1a1a1a">${esc(line)}</tspan>`;
+      const dy = li === 0 ? 0 : 14.0;
+      return `<tspan x="${c.labelX}" dy="${dy}" font-size="11.4" font-weight="600" fill="#1a1a1a">${esc(line)}</tspan>`;
     }).join('');
 
-    const pctSvg = `<tspan x="${c.labelX}" dy="11.5" font-size="8.5" font-weight="700" fill="${c.slice.color}">${c.slice.pct.toFixed(1)}% <tspan font-weight="400" fill="#666" font-size="7.5">(${c.slice.count})</tspan></tspan>`;
+    const pctSvg = `<tspan x="${c.labelX}" dy="15.0" font-size="11.8" font-weight="700" fill="${c.slice.color}">${c.slice.pct.toFixed(1)}% <tspan font-weight="400" fill="#555" font-size="10.4">(${c.slice.count})</tspan></tspan>`;
 
     svgLabels += `<text x="${c.labelX}" y="${c.labelY.toFixed(1)}" text-anchor="${anchor}" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif">
           ${linesSvg}
@@ -333,7 +333,7 @@ export function renderArrowPieChart(
   let zeroText = '';
   if (zeroSlices.length > 0) {
     const zeroStr = zeroSlices.map(s => `${esc(s.label)}: 0.0% (0)`).join(' | ');
-    zeroText = `<text x="${cx}" y="${cardHeight - 6}" text-anchor="middle" font-size="7" fill="#888" font-family="-apple-system, sans-serif">${zeroStr}</text>`;
+    zeroText = `<text x="${cx}" y="${cardHeight - 6}" text-anchor="middle" font-size="11.2" fill="#555" font-weight="600" font-family="-apple-system, sans-serif">${zeroStr}</text>`;
   }
 
   const num = String(qNum).padStart(2, '0');
@@ -534,12 +534,12 @@ html, body {
 .meta-tbl {
   width: 100%;
   border-collapse: collapse;
-  margin: 1.5mm 0 2.5mm;
-  font-size: 8.5pt;
+  margin: 1.5mm 0 2.2mm;
+  font-size: 8.8pt;
   flex-shrink: 0;
 }
 .meta-tbl td {
-  padding: 1.2mm 2mm;
+  padding: 1.1mm 2mm;
   vertical-align: top;
 }
 .meta-lbl {
@@ -575,7 +575,7 @@ html, body {
   overflow: hidden;
 }
 .chart-title {
-  font-size: 8.5pt;
+  font-size: 9.6pt;
   font-weight: 700;
   color: #1a1a1a;
   line-height: 1.25;
@@ -594,8 +594,9 @@ html, body {
   display: block;
 }
 .chart-foot {
-  font-size: 6.5pt;
-  color: #777777;
+  font-size: 7.8pt;
+  font-weight: 600;
+  color: #555555;
   text-align: center;
   margin-top: 1mm;
   padding-top: 0.8mm;
@@ -611,13 +612,14 @@ html, body {
   flex-shrink: 0;
 }
 .remarks-title {
-  font-size: 9pt;
+  font-size: 9.5pt;
   font-weight: 700;
   color: #1a1a1a;
   margin-bottom: 2mm;
 }
 .remarks-line {
-  font-size: 8.5pt;
+  font-size: 9.0pt;
+  font-weight: 600;
   color: #1a1a1a;
   padding-bottom: 8mm;
   border-bottom: 0.5pt dashed #bbb;
@@ -635,8 +637,9 @@ html, body {
   right: 10mm;
   display: flex;
   justify-content: space-between;
-  font-size: 6.5pt;
-  color: #777777;
+  font-size: 7.2pt;
+  font-weight: 500;
+  color: #555555;
   border-top: 0.5pt solid #dddddd;
   padding-top: 1.5mm;
 }
