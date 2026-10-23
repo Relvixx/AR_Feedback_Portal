@@ -50,7 +50,7 @@ export function MobileNav({ isOpen, onClose, currentPage, onNavigate }: MobileNa
         <div className="mobile-nav-header">
           <div className="mobile-nav-brand">
             <span className="mobile-nav-mark" aria-hidden="true">
-              A<span style={{ color: '#e7a549' }}>&</span>R
+              A<span style={{ color: '#B6654D' }}>&</span>R
             </span>
             <span className="mobile-nav-title">Feedback Portal</span>
           </div>

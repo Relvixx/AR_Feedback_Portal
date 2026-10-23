@@ -9,20 +9,28 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        navy: {
-          DEFAULT: '#102a43',
-          light: '#16324C',
+        forest: {
+          DEFAULT: '#1B302E',
+          light: '#2E524E',
         },
-        ink: '#162c40',
-        muted: '#718296',
-        blue: '#246ba5',
-        border: '#e3e9ef',
-        panel: '#fff',
-        ground: '#f4f7fa',
-        soft: '#edf4fa',
-        green: '#21837c',
+        navy: {
+          DEFAULT: '#1B302E',
+          light: '#2E524E',
+        },
+        terracotta: {
+          DEFAULT: '#B6654D',
+          light: '#F7EAE5',
+        },
+        ink: '#1B302E',
+        muted: '#536B68',
+        blue: '#B6654D',
+        border: '#E2DDD5',
+        panel: '#ffffff',
+        ground: '#F7F5F0',
+        soft: '#EFECE6',
+        green: '#166534',
         red: '#C00000',
-        gold: '#e7a549',
+        gold: '#B6654D',
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', '-apple-system', 'Segoe UI', 'Arial', 'sans-serif'],

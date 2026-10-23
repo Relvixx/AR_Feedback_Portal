@@ -157,14 +157,14 @@ export function SavedReports({ onOpen }: SavedReportsProps) {
           <div className="loading-spinner" aria-label="Loading reports">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} aria-hidden="true" style={{ width: 32, height: 32, margin: '0 auto' }}>
               <circle cx="12" cy="12" r="10" strokeOpacity="0.25" />
-              <path d="M12 2a10 10 0 0 1 10 10" stroke="#246b9e" strokeLinecap="round" />
+              <path d="M12 2a10 10 0 0 1 10 10" stroke="var(--terracotta, #B6654D)" strokeLinecap="round" />
             </svg>
           </div>
-          <p style={{ color: '#617386', marginTop: 12 }}>Loading reports...</p>
+          <p style={{ color: 'var(--muted, #536B68)', marginTop: 12 }}>Loading reports...</p>
         </div>
       ) : filteredReports.length === 0 ? (
         <div className="empty">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} style={{ width: 48, height: 48, margin: '0 auto 16px', color: '#c4d5e3' }}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} style={{ width: 48, height: 48, margin: '0 auto 16px', color: 'var(--muted-light, #7E9794)' }}>
             <path d="M4 5h16M4 12h16M4 19h16" />
           </svg>
           <h3>No matching reports</h3>

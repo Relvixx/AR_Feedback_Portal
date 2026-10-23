@@ -23,7 +23,7 @@ export function Brand({ variant = 'full', className = '' }: BrandProps) {
     <div className={`brand ${className}`} data-variant={effectiveVariant}>
       <div className="brand-mark" aria-hidden="true">
         <svg viewBox="0 0 40 42" fill="none" xmlns="http://www.w3.org/2000/svg" width="40" height="42">
-          <rect width="40" height="42" rx="11" fill="#f7fafc"/>
+          <rect width="40" height="42" rx="11" fill="#F7F5F0" stroke="#E2DDD5" strokeWidth="1"/>
           <text
             x="50%"
             y="56%"
@@ -32,10 +32,10 @@ export function Brand({ variant = 'full', className = '' }: BrandProps) {
             fontFamily="Inter, system-ui, sans-serif"
             fontSize="19"
             fontWeight="850"
-            fill="#143e62"
+            fill="#1B302E"
             letterSpacing="-0.5px"
           >
-            A<tspan fill="#e7a549">&</tspan>R
+            A<tspan fill="#B6654D">&</tspan>R
           </text>
         </svg>
       </div>
