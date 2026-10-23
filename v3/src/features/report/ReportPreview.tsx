@@ -3,18 +3,18 @@
 import Image from 'next/image';
 import { ReportSnapshot } from '@/lib/types/report';
 import { escapeHtml } from '@/lib/utils/escape';
+import { getQualityColor } from '@/lib/feedback/colors';
 
 interface ReportPreviewProps {
   report: ReportSnapshot;
 }
-
-const PIE_COLORS = ['#2377AC', '#E6AC44', '#61A59D', '#C86F6A'];
 
 export function ReportPreview({ report }: ReportPreviewProps) {
   const charts = report.questions.map((q, i) => ({
     number: i + 1,
     title: q.title,
     options: q.options,
+    bestOrder: q.bestOrder,
     counts: q.counts,
     percentages: q.percentages,
     total: report.respondentCount,
@@ -53,16 +53,20 @@ export function ReportPreview({ report }: ReportPreviewProps) {
               <PieChartSVG
                 counts={chart.counts}
                 total={chart.total}
+                bestOrder={chart.bestOrder}
+                totalOptions={chart.options.length}
               />
             </div>
             <div className="chart-legend">
               {chart.options.map((opt, idx) => {
                 if (chart.counts[idx] === 0) return null;
+                const qualityRank = chart.bestOrder.indexOf(idx);
+                const color = getQualityColor(qualityRank, chart.options.length);
                 return (
                   <div key={idx} className="legend-item" style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
                     <span 
                       className="legend-color" 
-                      style={{ width: '12px', height: '12px', borderRadius: '3px', backgroundColor: PIE_COLORS[idx % PIE_COLORS.length], flexShrink: 0 }} 
+                      style={{ width: '12px', height: '12px', borderRadius: '3px', backgroundColor: color, flexShrink: 0 }} 
                     />
                     <span className="legend-label" style={{ fontSize: '11px', color: '#172b3a', flex: 1 }}>{opt}</span>
                     <span className="legend-percent" style={{ fontSize: '11px', color: '#617386', fontWeight: 600 }}>{chart.percentages[idx].toFixed(1)}%</span>
@@ -85,7 +89,17 @@ export function ReportPreview({ report }: ReportPreviewProps) {
   );
 }
 
-function PieChartSVG({ counts, total }: { counts: readonly number[]; total: number }) {
+function PieChartSVG({
+  counts,
+  total,
+  bestOrder,
+  totalOptions,
+}: {
+  counts: readonly number[];
+  total: number;
+  bestOrder: readonly number[];
+  totalOptions: number;
+}) {
   const cx = 120;
   const cy = 85;
   const r = 50;
@@ -103,12 +117,14 @@ function PieChartSVG({ counts, total }: { counts: readonly number[]; total: numb
     const x2 = cx + r * Math.cos(end);
     const y2 = cy + r * Math.sin(end);
     const largeArc = span > 180 ? 1 : 0;
+    const qualityRank = bestOrder.indexOf(i);
+    const color = getQualityColor(qualityRank, totalOptions);
 
     paths.push(
       <path
         key={i}
         d={`M${cx} ${cy} L${x1.toFixed(3)} ${y1.toFixed(3)} A${r} ${r} 0 ${largeArc} 1 ${x2.toFixed(3)} ${y2.toFixed(3)} Z`}
-        fill={PIE_COLORS[i % PIE_COLORS.length]}
+        fill={color}
         stroke="#fff"
         strokeWidth="1.2"
       />
