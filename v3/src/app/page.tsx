@@ -42,19 +42,37 @@ export default function HomePage() {
     }
   }, [activeReport, showToast]);
 
-  const handleDownloadPDF = useCallback(() => {
+  const handleDownloadPDF = useCallback(async () => {
     if (!activeReport) return;
-    const link = document.createElement('a');
-    link.href = `/api/report/${activeReport.id}/pdf`;
-    link.setAttribute('download', '');
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  }, [activeReport]);
+    try {
+      showToast('Preparing PDF download...', 'success');
+      const res = await fetch(`/api/report/${activeReport.id}/pdf`);
+      const contentType = res.headers.get('content-type') || '';
+      
+      if (res.ok && contentType.includes('application/pdf')) {
+        const blob = await res.blob();
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        const safeCode = activeReport.academic.subjectCode.replace(/[^a-zA-Z0-9_-]+/g, '_');
+        link.download = `Feedback_${safeCode}_${activeReport.academic.academicYear}_${activeReport.period}.pdf`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+        showToast('PDF downloaded successfully!', 'success');
+        return;
+      }
+    } catch (e) {
+      console.warn('Direct PDF download failed, opening print view:', e);
+    }
+    // Reliable fallback for serverless hosting: open print/save view
+    window.open(`/api/report/${activeReport.id}/print`, '_blank');
+  }, [activeReport, showToast]);
 
   const handlePrint = useCallback(() => {
     if (!activeReport) return;
-    window.open(`/api/report/${activeReport.id}/pdf`, '_blank');
+    window.open(`/api/report/${activeReport.id}/print`, '_blank');
   }, [activeReport]);
 
   const handleOpenReport = useCallback(async (id: string) => {
