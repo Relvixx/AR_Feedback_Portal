@@ -4,7 +4,6 @@
  * The secret key must be set as SUPABASE_SECRET_KEY (without NEXT_PUBLIC_).
  * RLS is enabled and the anon/authenticated roles have no direct table access.
  */
-import 'server-only';
 import type {
   ReportStorage, ReportGroup, ReportSnapshot, ReportListItem,
   ListReportsParams, NormalizedAcademicIdentity, FeedbackPeriod,
