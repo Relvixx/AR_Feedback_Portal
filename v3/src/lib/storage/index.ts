@@ -161,7 +161,7 @@ class InMemoryStorage implements ReportStorage {
   }
 }
 
-// Local tests continue using the in-memory adapter; hosted server requests use Supabase.\nimport { SupabaseStorage } from './supabase';\nexport const storage: ReportStorage = process.env.NODE_ENV === 'production' && process.env.SUPABASE_URL\n  ? new SupabaseStorage() : new InMemoryStorage();
+// Local tests continue using the in-memory adapter; hosted server requests use Supabase.\nimport { SupabaseStorage } from './supabase';\nexport const storage: ReportStorage = process.env.NODE_ENV === 'production'\n  ? new SupabaseStorage() : new InMemoryStorage();
 
 // Export type for dependency injection in tests
 export type { InMemoryStorage };
