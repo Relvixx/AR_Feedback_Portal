@@ -374,13 +374,33 @@ describe('Phase 1.1 Regression Tests', () => {
       }
     });
 
-    it('developmentOnlyGuard blocks requests in production mode', () => {
+    it('developmentOnlyGuard allows same-origin requests in production mode', () => {
       const originalEnv = process.env.NODE_ENV;
       process.env.NODE_ENV = 'production';
       
       try {
         const mockRequest = {
           nextUrl: { pathname: '/api/report' },
+          headers: new Headers(),
+        } as unknown as NextRequest;
+        
+        const result = developmentOnlyGuard(mockRequest);
+        expect(result).toBeNull();
+      } finally {
+        process.env.NODE_ENV = originalEnv;
+      }
+    });
+
+    it('developmentOnlyGuard blocks cross-site requests in production mode', () => {
+      const originalEnv = process.env.NODE_ENV;
+      process.env.NODE_ENV = 'production';
+      
+      try {
+        const headers = new Headers();
+        headers.set('sec-fetch-site', 'cross-site');
+        const mockRequest = {
+          nextUrl: { pathname: '/api/report' },
+          headers,
         } as unknown as NextRequest;
         
         const result = developmentOnlyGuard(mockRequest);
