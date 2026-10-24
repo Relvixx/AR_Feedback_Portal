@@ -161,8 +161,22 @@ class InMemoryStorage implements ReportStorage {
   }
 }
 
-// Singleton instance for Phase 1
-export const storage = new InMemoryStorage();
+import { SupabaseStorage } from './supabase';
 
-// Export type for dependency injection in tests
-export type { InMemoryStorage };
+function createStorage(): ReportStorage {
+  const hasSupabase = Boolean(
+    process.env.NEXT_PUBLIC_SUPABASE_URL &&
+    (process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)
+  );
+
+  if (hasSupabase && process.env.USE_IN_MEMORY_STORAGE !== 'true') {
+    return new SupabaseStorage();
+  }
+  return new InMemoryStorage();
+}
+
+// Singleton storage instance (Supabase in dev/prod with credentials, InMemory in isolated tests)
+export const storage: ReportStorage = createStorage();
+
+// Export types and classes for testing and dependency injection
+export { InMemoryStorage, SupabaseStorage };

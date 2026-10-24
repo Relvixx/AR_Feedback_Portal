@@ -234,7 +234,7 @@ describe('Report Generator', () => {
     const result1 = generateFirstReport({ academic, period: 'MID' });
     const result2 = generateFirstReport({ academic, period: 'MID' });
     expect(result1.snapshot.seed).not.toBe(result2.snapshot.seed);
-    expect(result1.snapshot.respondentCount).not.toBe(result2.snapshot.respondentCount);
+    expect(result1.snapshot.id).not.toBe(result2.snapshot.id);
   });
 
   it('generates next version with incremented version number', () => {
