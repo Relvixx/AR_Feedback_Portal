@@ -542,12 +542,13 @@ it('PDF template has exactly 2 pages', () => {
       expect(deptCount).toBe(2);
     });
 
-    it('Data provenance footer on both pages', () => {
+    it('Data provenance footer removed from PDF pages per user request', () => {
       const result = generateFirstReport({ academic, period: 'MID' });
       const html = renderTemplate(result.snapshot);
       
       const provenanceCount = (html.match(/system-generated; no student survey/gi) || []).length;
-      expect(provenanceCount).toBe(2);
+      expect(provenanceCount).toBe(0);
+      expect(result.snapshot.dataOrigin).toBeDefined();
     });
 
     it('All 10 question titles present in HTML', () => {

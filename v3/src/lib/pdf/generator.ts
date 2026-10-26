@@ -394,7 +394,7 @@ function renderMetadata(report: ReportSnapshot): string {
 
 function renderFooter(report: ReportSnapshot, pageNum: number): string {
   return `<div class="ftr">
-    <span>Internal report &nbsp;|&nbsp; ${esc(report.dataOrigin)}</span>
+    <span></span>
     <span>Page ${pageNum} of 2</span>
   </div>`;
 }
