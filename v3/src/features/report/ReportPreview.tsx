@@ -22,20 +22,23 @@ export function ReportPreview({ report }: ReportPreviewProps) {
 
   return (
     <div className="preview" id="report-preview">
-      <div className="sheet-header">
-        <Image
-          alt="College logo"
-          src="/college_logo.png"
-          width={120}
-          height={56}
-          priority
-        />
-        <div className="sheet-institute">
+      <div className="sheet-header" style={{ position: 'relative', width: '100%', marginBottom: 12 }}>
+        <div style={{ position: 'absolute', left: 0, top: 2 }}>
+          <Image
+            alt="College logo"
+            src="/college_logo.png"
+            width={95}
+            height={44}
+            priority
+            style={{ width: 'auto', height: '42px', objectFit: 'contain' }}
+          />
+        </div>
+        <div className="sheet-institute" style={{ width: '100%', textAlign: 'center' }}>
           <h2>MET&apos;s Institute of Technology (P) B. Tech.</h2>
           <p>Affiliated to Dr. Babasaheb Ambedkar Technological University, Lonere.</p>
         </div>
       </div>
-      <div className="sheet-subhead">
+      <div className="sheet-subhead" style={{ textAlign: 'center' }}>
         <strong>Department of Automation and Robotics</strong>
         <div>{report.period === 'MID' ? 'Mid' : 'End'} Semester Feedback — A.Y. {escapeHtml(report.academic.academicYear)}</div>
       </div>

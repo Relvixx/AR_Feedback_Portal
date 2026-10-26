@@ -363,15 +363,13 @@ function renderPageHeader(report: ReportSnapshot, logoB64: string): string {
     : '';
 
   return `<div class="hdr">
-    <div class="hdr-top">
-      ${logoImg}
-      <div class="inst">
-        <div class="inst-name">MET's Institute of Technology (P) B. Tech.</div>
-        <div class="inst-aff">Affiliated to Dr. Babasaheb Ambedkar Technological University, Lonere.</div>
-      </div>
+    ${logoImg}
+    <div class="hdr-text">
+      <div class="inst-name">MET's Institute of Technology (P) B. Tech.</div>
+      <div class="inst-aff">Affiliated to Dr. Babasaheb Ambedkar Technological University, Lonere.</div>
+      <div class="hdr-dept">Department of Automation and Robotics</div>
+      <div class="hdr-period">${esc(periodLabel)} Feedback &mdash; A.Y. ${esc(report.academic.academicYear)}</div>
     </div>
-    <div class="hdr-dept">Department of Automation and Robotics</div>
-    <div class="hdr-period">${esc(periodLabel)} Feedback &mdash; A.Y. ${esc(report.academic.academicYear)}</div>
   </div>`;
 }
 
@@ -482,25 +480,24 @@ html, body {
 
 /* ---- HEADER ---- */
 .hdr {
+  position: relative;
+  width: 100%;
   margin-bottom: 2mm;
   padding-bottom: 2mm;
   border-bottom: 2pt solid #1a1a1a;
   flex-shrink: 0;
 }
-.hdr-top {
-  display: flex;
-  align-items: center;
-  gap: 4mm;
-  margin-bottom: 1mm;
-}
 .logo {
-  height: 14mm;
+  position: absolute;
+  left: 0;
+  top: 0.5mm;
+  height: 11.5mm;
   width: auto;
-  max-width: 38mm;
+  max-width: 30mm;
   object-fit: contain;
 }
-.inst {
-  flex: 1;
+.hdr-text {
+  width: 100%;
   text-align: center;
 }
 .inst-name {
